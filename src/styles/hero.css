@@ -78,7 +78,7 @@
   gap: 0.5rem;
   position: relative;
   overflow: hidden;
-  min-width: 140px; /* Added minimum width for better button proportions */
+  min-width: 140px;
 }
 
 .hero-btn::before {
@@ -114,7 +114,6 @@
   background: transparent;
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  /* Fixed: Added -webkit-backdrop-filter for Safari compatibility */
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
@@ -143,13 +142,15 @@
   .hero-actions {
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem; /* Reduced gap on mobile */
+    gap: 0.75rem;
+    width: 100%;
   }
   
   .hero-btn {
-    width: 100%;
-    max-width: 280px; /* Reduced from 300px to 280px */
-    padding: 0.875rem 1.5rem; /* Slightly reduced padding on mobile */
+    width: auto; /* Changed from 100% to auto */
+    min-width: 200px; /* Moderate fixed width */
+    max-width: 80%; /* Maximum 80% of container width */
+    padding: 0.875rem 2rem;
   }
 }
 
@@ -163,12 +164,13 @@
   }
   
   .hero-actions {
-    gap: 0.5rem; /* Even smaller gap on very small screens */
+    gap: 0.5rem;
   }
   
   .hero-btn {
-    max-width: 260px; /* Even smaller on very small screens */
-    padding: 0.75rem 1.25rem; /* Further reduced padding */
-    font-size: 0.95rem; /* Slightly smaller font */
+    min-width: 180px; /* Slightly smaller on very small screens */
+    max-width: 85%; /* Allow slightly more width on very small screens */
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
   }
 }
