@@ -1,0 +1,482 @@
+/* Header Component Styles */
+.site-header {
+  background: #ffffff;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #f0f0f0;
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              background-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* Header when scrolled */
+.site-header.scrolled {
+  background: rgba(255, 255, 255, 0.95);
+  /* Fixed: Vendor prefix first, then standard property */
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Header hidden when scrolling down */
+.site-header.hidden {
+  transform: translateY(-100%);
+  box-shadow: none;
+}
+
+/* Header visible when scrolling up */
+.site-header.visible {
+  transform: translateY(0);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  transition: padding 0.3s ease;
+}
+
+/* Compact header when scrolled */
+.site-header.scrolled .header-inner {
+  padding: 0.75rem 0;
+}
+
+.brand-area {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.brand:hover {
+  color: #667eea;
+  transform: translateX(2px);
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.site-header.scrolled .brand-mark {
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+}
+
+.brand-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  transition: font-size 0.3s ease;
+}
+
+.site-header.scrolled .brand-text {
+  font-size: 1.1rem;
+}
+
+/* Main Navigation */
+.main-nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #667eea;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Actions Area - Hidden on mobile, shown on desktop */
+.actions-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.greeting {
+  color: #64748b;
+  font-weight: 500;
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+  transition: font-size 0.3s ease;
+}
+
+.site-header.scrolled .greeting {
+  font-size: 0.85rem;
+}
+
+.header-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.header-btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.site-header.scrolled .header-btn-small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.header-btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.header-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.header-btn-ghost {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.header-btn-ghost:hover {
+  background: #f8fafc;
+  border-color: #cbd5e0;
+}
+
+.header-btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.header-btn-success:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Dropdown Styles */
+.dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem;
+  min-width: 200px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+}
+
+.dropdown-wrap:hover .dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(5px);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #374151;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #f8fafc;
+  color: #667eea;
+  transform: translateX(2px);
+}
+
+.dropdown-item-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0.5rem 0;
+}
+
+/* Mobile Navigation Dropdown */
+.mobile-nav-dropdown {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem 0;
+}
+
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  color: #374151;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.mobile-nav-item:hover {
+  background: #f8fafc;
+  color: #667eea;
+}
+
+.mobile-nav-item-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.mobile-nav-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0.5rem 0;
+}
+
+/* Welcome Banner */
+.welcome-banner {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  text-align: center;
+  padding: 0.75rem;
+  font-weight: 600;
+  animation: slideDown 0.5s ease-out;
+  position: relative;
+  z-index: 999;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Scroll progress indicator */
+.scroll-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.1s ease;
+  z-index: 1001;
+}
+
+/* Mobile menu button */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #64748b;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-btn:hover {
+  background: #f8fafc;
+  color: #374151;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .brand-area {
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .main-nav {
+    display: none;
+  }
+  
+  .actions-area {
+    display: none; /* Hide desktop actions on mobile */
+  }
+  
+  .greeting {
+    display: none;
+  }
+  
+  .dropdown {
+    left: 0;
+    right: auto;
+  }
+  
+  .mobile-menu-btn {
+    display: flex;
+  }
+  
+  /* Mobile menu when active */
+  .site-header.mobile-open .main-nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+    margin-top: 1rem;
+  }
+  
+  .site-header.mobile-open .mobile-nav-dropdown {
+    display: flex;
+  }
+  
+  .mobile-nav-item {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-text {
+    font-size: 1.1rem;
+  }
+  
+  .header-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .site-header.scrolled .brand-text {
+    font-size: 1rem;
+  }
+  
+  .mobile-nav-item {
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Body padding to account for fixed header */
+body {
+  padding-top: 80px;
+}
+
+.site-header.scrolled ~ * {
+  padding-top: 70px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide header on print */
+@media print {
+  .site-header {
+    display: none;
+  }
+  
+  body {
+    padding-top: 0;
+  }
+}

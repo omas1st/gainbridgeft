@@ -1,0 +1,272 @@
+.admin-messages-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-messages-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-top: 16px;
+}
+
+.admin-messages-header {
+  margin-bottom: 24px;
+}
+
+.admin-messages-search {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.admin-search-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 300px;
+}
+
+.admin-search-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-search-btn:hover {
+  background: #2563eb;
+}
+
+.admin-search-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.admin-search-info {
+  margin-left: auto;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.admin-user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.admin-user-info {
+  flex: 1;
+}
+
+.admin-user-main {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2d3748;
+  margin-bottom: 4px;
+}
+
+.admin-user-details {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-user-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-message-btn {
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-message-btn:hover {
+  background: #7c3aed;
+}
+
+.admin-view-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-view-btn:hover {
+  background: #059669;
+}
+
+.admin-user-messages {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.admin-messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.admin-message-item {
+  padding: 16px;
+  background: white;
+  border-radius: 6px;
+  border-left: 4px solid #8b5cf6;
+}
+
+.admin-message-header {
+  font-weight: 700;
+  font-size: 14px;
+  color: #2d3748;
+  margin-bottom: 6px;
+}
+
+.admin-message-body {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.admin-message-meta {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.admin-compose-section {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.admin-compose-header {
+  margin-bottom: 16px;
+}
+
+.admin-compose-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-compose-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.admin-compose-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.admin-compose-textarea {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+}
+
+.admin-compose-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-send-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-send-btn:hover {
+  background: #059669;
+}
+
+.admin-clear-btn {
+  background: #6b7280;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-clear-btn:hover {
+  background: #4b5563;
+}
+
+.admin-status-message {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.admin-status-success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.admin-status-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.admin-empty {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-style: italic;
+}

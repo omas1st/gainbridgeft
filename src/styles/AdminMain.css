@@ -1,0 +1,265 @@
+.admin-main-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-navigation {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 20px 0;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-nav-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.admin-nav-btn:hover {
+  background: #2563eb;
+}
+
+.admin-user-info {
+  margin-left: auto;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-main-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-top: 20px;
+}
+
+.admin-main-header {
+  margin-bottom: 24px;
+}
+
+.admin-filters-container {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.admin-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 150px;
+}
+
+.admin-filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.admin-filter-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 220px;
+}
+
+.admin-filter-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  min-width: 160px;
+}
+
+.admin-filter-number {
+  min-width: 100px;
+}
+
+.admin-filter-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  align-items: flex-end;
+}
+
+.admin-filter-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  height: fit-content;
+}
+
+.admin-filter-btn:hover {
+  background: #2563eb;
+}
+
+.admin-reset-btn {
+  background: #6b7280;
+}
+
+.admin-reset-btn:hover {
+  background: #4b5563;
+}
+
+.admin-users-stats {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #3b82f6;
+  transition: transform 0.2s;
+}
+
+.admin-user-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-user-info {
+  flex: 1;
+}
+
+.admin-user-main {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2d3748;
+  margin-bottom: 6px;
+}
+
+.admin-user-email {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.admin-user-details {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.admin-user-meta {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.admin-user-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-profile-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-profile-btn:hover {
+  background: #059669;
+}
+
+.admin-delete-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-delete-btn:hover {
+  background: #dc2626;
+}
+
+.admin-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.admin-pagination-info {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-pagination-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-pagination-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-pagination-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.admin-pagination-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.admin-loading {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.admin-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+  font-style: italic;
+}

@@ -1,0 +1,229 @@
+.admin-requests-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-requests-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-top: 16px;
+}
+
+.admin-requests-header {
+  margin-bottom: 24px;
+}
+
+.admin-requests-filters {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.admin-requests-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-requests-filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.admin-requests-filter-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.admin-requests-filter-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+}
+
+.admin-requests-apply-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  height: fit-content;
+}
+
+.admin-requests-apply-btn:hover {
+  background: #2563eb;
+}
+
+.admin-requests-info {
+  margin-left: auto;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-requests-divider {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+}
+
+.admin-requests-section {
+  margin-bottom: 32px;
+}
+
+.admin-requests-section-header {
+  margin-bottom: 16px;
+  color: #374151;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 8px;
+}
+
+.admin-requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-request-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #f59e0b;
+}
+
+.admin-request-item-deposit {
+  border-left-color: #10b981;
+}
+
+.admin-request-item-withdrawal {
+  border-left-color: #ef4444;
+}
+
+.admin-request-info {
+  flex: 1;
+}
+
+.admin-request-main {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2d3748;
+  margin-bottom: 4px;
+}
+
+.admin-request-meta {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-request-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-request-approve {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-request-approve:hover {
+  background: #059669;
+}
+
+.admin-request-reject {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-request-reject:hover {
+  background: #dc2626;
+}
+
+.admin-requests-loading {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+}
+
+.admin-requests-empty {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Modal Styles */
+.admin-requests-modal-content {
+  padding: 16px 0;
+}
+
+.admin-requests-modal-user {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-requests-modal-amount {
+  font-size: 18px;
+  font-weight: 600;
+  color: #10b981;
+  margin: 8px 0;
+}
+
+.admin-requests-modal-details {
+  margin-top: 12px;
+}
+
+.admin-requests-modal-row {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.admin-requests-modal-highlight {
+  font-weight: 600;
+  color: #374151;
+}
+
+.admin-requests-modal-note {
+  background: #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 12px;
+}
+
+.admin-requests-modal-bank-details {
+  background: #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-top: 8px;
+  font-size: 14px;
+}

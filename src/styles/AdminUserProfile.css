@@ -1,0 +1,351 @@
+.admin-user-profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-user-profile-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-top: 16px;
+}
+
+.admin-user-profile-header {
+  margin-bottom: 24px;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 12px;
+}
+
+.admin-user-profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 768px) {
+  .admin-user-profile-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.admin-user-profile-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-user-profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-user-profile-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.admin-user-profile-input {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.admin-user-profile-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.admin-user-profile-input:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.admin-user-profile-select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.admin-user-profile-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-user-profile-save-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-user-profile-save-btn:hover {
+  background: #059669;
+}
+
+.admin-user-profile-save-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.admin-user-profile-delete-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-user-profile-delete-btn:hover {
+  background: #dc2626;
+}
+
+.admin-user-profile-back-btn {
+  background: #6b7280;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-user-profile-back-btn:hover {
+  background: #4b5563;
+}
+
+.admin-user-profile-message {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.admin-user-profile-success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.admin-user-profile-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Referrals Section */
+.admin-user-profile-section-header {
+  margin: 24px 0 16px 0;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+.admin-referrals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-referral-item {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #8b5cf6;
+}
+
+.admin-referral-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-referral-email {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2d3748;
+}
+
+.admin-referral-meta {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.admin-referral-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-referral-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-referral-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.admin-referral-input {
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 120px;
+}
+
+.admin-referral-note {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* Transactions Section */
+.admin-transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-transaction-item {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #6b7280;
+}
+
+.admin-transaction-item-deposit {
+  border-left-color: #10b981;
+}
+
+.admin-transaction-item-withdrawal {
+  border-left-color: #ef4444;
+}
+
+.admin-transaction-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-transaction-info {
+  flex: 1;
+}
+
+.admin-transaction-type {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2d3748;
+  margin-bottom: 4px;
+}
+
+.admin-transaction-meta {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-transaction-details {
+  text-align: right;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.admin-transaction-approved {
+  font-weight: 600;
+  color: #10b981;
+}
+
+.admin-transaction-bank-details {
+  background: #e5e7eb;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.admin-user-profile-footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Loading and Empty States */
+.admin-user-profile-loading {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.admin-user-profile-empty {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Badge Styles */
+.admin-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin-badge--pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.admin-badge--approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.admin-badge--rejected {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.admin-badge--completed {
+  background: #dbeafe;
+  color: #1d4ed8;
+}

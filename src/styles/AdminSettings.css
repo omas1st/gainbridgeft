@@ -1,0 +1,182 @@
+.admin-settings-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-settings-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-top: 16px;
+}
+
+.admin-settings-header {
+  margin-bottom: 24px;
+}
+
+.admin-settings-loading {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.admin-settings-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.admin-settings-add-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-settings-add-btn:hover {
+  background: #2563eb;
+}
+
+.admin-method-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-method-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.admin-method-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-method-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #374151;
+}
+
+.admin-method-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-method-type-select {
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+}
+
+.admin-method-delete-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 8px;
+}
+
+.admin-method-delete-btn:hover {
+  background: #dc2626;
+}
+
+.admin-method-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-method-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-method-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.admin-method-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.admin-method-textarea {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.admin-method-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.admin-settings-save-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+.admin-settings-save-btn:hover {
+  background: #059669;
+}
+
+.admin-settings-save-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.admin-settings-message {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.admin-settings-success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.admin-settings-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}

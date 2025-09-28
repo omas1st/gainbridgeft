@@ -1,0 +1,181 @@
+/* Invest Page Styles */
+.invest-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.invest-header-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.invest-main-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.invest-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 0;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.plan-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.plan-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4299e1, #38b2ac);
+}
+
+.plan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.plan-amount {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.plan-details {
+  color: #718096;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.plan-features {
+  margin: 1rem 0;
+}
+
+.plan-feature {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f7fafc;
+  font-size: 0.9rem;
+}
+
+.plan-feature:last-child {
+  border-bottom: none;
+}
+
+.feature-label {
+  color: #4a5568;
+}
+
+.feature-value {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.plan-button {
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #4299e1, #38b2ac);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+.plan-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+}
+
+.plan-badge {
+  position: absolute;
+  top: 1rem;
+  right: -2rem;
+  background: #e53e3e;
+  color: white;
+  padding: 0.25rem 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transform: rotate(45deg);
+}
+
+/* Popular Plan Styling */
+.plan-card.popular {
+  border-color: #4299e1;
+  transform: scale(1.02);
+}
+
+.plan-card.popular::before {
+  background: linear-gradient(90deg, #e53e3e, #ed8936);
+  height: 6px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .plans-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .invest-header-card {
+    padding: 1.5rem;
+  }
+  
+  .invest-main-title {
+    font-size: 1.75rem;
+  }
+  
+  .plans-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .plan-card.popular {
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .invest-container {
+    padding: 0 0.5rem;
+  }
+  
+  .plan-card {
+    padding: 1rem;
+  }
+  
+  .plan-amount {
+    font-size: 1.5rem;
+  }
+}

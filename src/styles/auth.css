@@ -1,0 +1,6 @@
+.auth-page{display:flex;justify-content:center;align-items:flex-start;padding:40px 0}
+.auth-card{max-width:520px;margin:20px auto;padding:20px}
+.auth-card form label{display:block;margin-top:8px;font-weight:600}
+.auth-card input, .auth-card select, .auth-card textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #e6e6e6;margin-top:6px}
+.error{color:#ef4444;margin-top:8px}
+.notice{color:#15803d;margin-top:8px}

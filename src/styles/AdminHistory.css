@@ -1,0 +1,131 @@
+.admin-history-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-history-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.admin-history-header {
+  margin-bottom: 24px;
+}
+
+.admin-history-filters {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.admin-history-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-history-filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.admin-history-filter-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.admin-history-filter-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+}
+
+.admin-history-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.admin-history-export-btn {
+  background: #059669;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-history-export-btn:hover {
+  background: #047857;
+}
+
+.admin-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-history-item {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #6b7280;
+}
+
+.admin-history-item-deposit {
+  border-left-color: #10b981;
+}
+
+.admin-history-item-withdraw {
+  border-left-color: #ef4444;
+}
+
+.admin-history-main-info {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2d3748;
+  margin-bottom: 4px;
+}
+
+.admin-history-meta {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.admin-history-details {
+  background: #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #4b5563;
+  margin-top: 8px;
+}
+
+.admin-history-loading {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+}
+
+.admin-history-empty {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-style: italic;
+}

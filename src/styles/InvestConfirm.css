@@ -1,0 +1,358 @@
+/* src/pages/InvestConfirm.css */
+.invest-confirm-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.invest-confirm-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-top: 16px;
+}
+
+/* Section Styling */
+section {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.section-subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+/* Confirm Payment Section */
+.confirm-payment-section {
+  text-align: center;
+}
+
+.payment-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.amount-usd {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+.amount-zar {
+  font-size: 1.25rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Investment Details Section */
+.details-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-item.total-return {
+  background-color: #f0f9ff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 8px;
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.total-return .detail-value {
+  color: #059669;
+  font-size: 1.1rem;
+}
+
+/* Payment Method Section */
+.method-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.method-label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.method-dropdown {
+  padding: 12px;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.method-dropdown:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* Payment Details Section */
+.payment-instructions {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.method-header {
+  margin-bottom: 20px;
+}
+
+.method-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.method-description {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.bank-details .detail-row,
+.crypto-details .detail-row,
+.other-details .detail-row {
+  margin-bottom: 16px;
+}
+
+.bank-details .detail-row:last-child,
+.crypto-details .detail-row:last-child,
+.other-details .detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.detail-with-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 60px;
+  font-weight: 500;
+}
+
+.copy-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.copy-btn.copied {
+  background: #059669;
+  transform: scale(0.95);
+}
+
+.copy-btn:active {
+  transform: scale(0.95);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.copy-btn.copied {
+  animation: pulse 0.3s ease;
+}
+
+.payment-note {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 12px;
+  margin-top: 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #92400e;
+}
+
+.method-json {
+  background: white;
+  padding: 16px;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+  font-size: 0.85rem;
+  overflow-x: auto;
+}
+
+/* Action Section */
+.action-section {
+  text-align: center;
+}
+
+.action-instruction {
+  margin-bottom: 20px;
+}
+
+.instruction-text {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  background: #f0f9ff;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.confirm-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 160px;
+}
+
+.confirm-btn.primary {
+  background: #059669;
+  color: white;
+}
+
+.confirm-btn.primary:hover:not(:disabled) {
+  background: #047857;
+}
+
+.confirm-btn.primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.confirm-btn.secondary {
+  background: #6b7280;
+  color: white;
+}
+
+.confirm-btn.secondary:hover {
+  background: #4b5563;
+}
+
+/* Messages */
+.message {
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+.message.success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.message.error {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .invest-confirm-container {
+    padding: 12px;
+  }
+  
+  .invest-confirm-card {
+    padding: 16px;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .confirm-btn {
+    width: 100%;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .detail-with-copy {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .copy-btn {
+    min-width: 70px;
+    padding: 8px 12px;
+  }
+}
