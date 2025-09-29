@@ -1,6 +1,6 @@
 // src/App.js
-import React, { Suspense } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import React, { Suspense, useEffect } from 'react'
+import { Routes, Route, useLocation, useNavigationType } from 'react-router-dom'
 import ErrorBoundary from './components/ErrorBoundary'
 
 const Header = React.lazy(() => import('./components/Header'))
@@ -37,10 +37,39 @@ const PrivateRoute = React.lazy(() => import('./components/PrivateRoute'))
 
 function Loader(){ return <div style={{padding:40}}>Loading...</div> }
 
+// ScrollToTop: scrolls window to top on navigation (except for POP/back navigations)
+function ScrollToTop(){
+  const { pathname } = useLocation()
+  const navigationType = useNavigationType() // 'PUSH' | 'POP' | 'REPLACE'
+
+  // Disable browser automatic restoration so we can control scroll behavior consistently
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      try { window.history.scrollRestoration = 'manual' } catch (e) { /* ignore */ }
+    }
+  }, [])
+
+  useEffect(() => {
+    // preserve browser back/forward expected behavior: if navigation is POP (back/forward), don't force scroll
+    if (navigationType === 'POP') return
+
+    // Some pages are lazy-loaded; using requestAnimationFrame helps ensure layout has settled.
+    // We avoid setTimeout to keep behavior deterministic.
+    requestAnimationFrame(() => {
+      try { window.scrollTo({ top: 0, left: 0, behavior: 'auto' }) } catch (e) { /* ignore */ }
+    })
+  }, [pathname, navigationType])
+
+  return null
+}
+
 export default function App(){
   return (
     <ErrorBoundary>
       <Suspense fallback={<Loader/>}>
+        {/* scroll to top on route changes */}
+        <ScrollToTop />
+
         <Header />
         <main style={{paddingBottom:40}}>
           <Routes>
