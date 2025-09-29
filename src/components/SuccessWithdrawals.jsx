@@ -53,13 +53,13 @@ function generateName(index) {
 }
 
 // Generate the withdrawal objects (count default 200)
-// NOTE: amount always ends with "0" by generating multiples of 10 between 10 and 10000.
+// NOTE: amount always ends with "0" by generating multiples of 10 between $10 and $1,000.
 function generateWithdrawals(count = 200) {
   const arr = []
   for (let i = 0; i < count; i++) {
     const name = generateName(i)
-    // generate a multiple-of-10 between 10 and 10000 (1..1000 * 10)
-    const amount = randInt(1, 1000) * 10
+    // generate a multiple-of-10 between 10 and 1000 (1..100 * 10)
+    const amount = randInt(1, 100) * 10
     const time = randomTimeString()
     arr.push({ id: i + 1, name, amount, time })
   }
@@ -106,8 +106,8 @@ export default function SuccessWithdrawals() {
         const copy = prev.slice()
         // pick a random index to update
         const i = randInt(0, copy.length - 1)
-        // produce new amount/time - ensure amount ends with '0'
-        const newAmount = randInt(1, 1000) * 10
+        // produce new amount/time - ensure amount ends with '0' and is within $10 - $1,000
+        const newAmount = randInt(1, 100) * 10
         const newTime = randomTimeString()
         // replace with new object to ensure React sees change
         const updated = { ...copy[i], amount: newAmount, time: newTime }
