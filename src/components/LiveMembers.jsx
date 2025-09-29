@@ -38,7 +38,7 @@ export default function LiveMembers(){
 
       <div className="member-stat">
         <div className="member-count">{loading ? '—' : shownOnline.toLocaleString()}</div>
-        <div className="member-label">Members online</div>
+        <div className="member-label">Members online (Approx)</div>
         {!loading && <div className="status-indicator"><div className="status-dot"></div><div className="status-text">Active</div></div>}
       </div>
     </div>

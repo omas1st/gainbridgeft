@@ -7,7 +7,7 @@ export default function KeyFeatures(){
     'Clear 60-day investment cycle (≈42 investment days)',
     'Tiered plans to suit small and large capital',
     'Fast KYC & secure withdrawals',
-    '24/7 customer support via ticket',
+    '24/7 customer support via in app chat',
     'Detailed account and transaction history'
   ]
 
