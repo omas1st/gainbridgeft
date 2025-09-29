@@ -202,6 +202,9 @@ export default function InvestConfirm(){
                     </div>
                     <div className="payment-note">
                       Make exact payment of ${plan.amount} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} and use the reference.
+                      <div className="important-note" style={{marginTop:8,fontStyle:'italic'}}>
+                        Note: Transfers via Capitec bank are not allowed — Capitec bank users should use an ATM deposit instead.
+                      </div>
                     </div>
                   </div>
                 )}
@@ -246,7 +249,7 @@ export default function InvestConfirm(){
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">Account Name:</span>
-                  <span className="detail-value">Mama pty</span>
+                  <span className="detail-value">GainBridge</span>
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">Account Number:</span>
@@ -274,6 +277,9 @@ export default function InvestConfirm(){
                 </div>
                 <div className="payment-note">
                   Make exact payment of ${plan.amount} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} and use the reference.
+                  <div className="important-note" style={{marginTop:8,fontStyle:'italic'}}>
+                    Note: Transfers via Capitec bank are not allowed — Capitec bank users should use an ATM deposit instead.
+                  </div>
                 </div>
               </div>
             )}
@@ -285,6 +291,8 @@ export default function InvestConfirm(){
           <div className="action-instruction">
             <p className="instruction-text">
               After completing your payment using the instructions above, please click the button below to notify us.
+              <br />
+              <strong>It is compulsory to send your payment receipt/proof to our platform email: <a href="mailto:gainbridgeinvest@gmail.com">gainbridgeinvest@gmail.com</a>.</strong>
             </p>
           </div>
           

@@ -58,6 +58,10 @@ function calcDailyProfit(amount, ratePercent, days) {
 export default function Invest(){
   const nav = useNavigate()
 
+  // ZAR conversion rate (frontend display only)
+  const ZAR_RATE = 17
+  const toZAR = (usd) => (Number(usd || 0) * ZAR_RATE).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
   function choose(plan){
     nav('/invest/confirm', { state: { plan } })
   }
@@ -78,7 +82,10 @@ export default function Invest(){
             <div className={`plan-card ${isPopular ? 'popular' : ''}`} key={p.amount}>
               {isPopular && <div className="plan-badge">POPULAR</div>}
               
-              <div className="plan-amount">${p.amount.toLocaleString()}</div>
+              <div className="plan-amount">
+                ${p.amount.toLocaleString()}
+                <span className="zar-value">(R{toZAR(p.amount)})</span>
+              </div>
               <div className="plan-details">
                 {p.rate}% daily — {p.days} days (≈ {calc.businessDays} investment days)
               </div>
@@ -86,11 +93,17 @@ export default function Invest(){
               <div className="plan-features">
                 <div className="plan-feature">
                   <span className="feature-label">Daily Profit:</span>
-                  <span className="feature-value">${calc.dailyProfit}</span>
+                  <span className="feature-value">
+                    ${calc.dailyProfit}
+                    <span className="zar-value">(R{toZAR(calc.dailyProfit)})</span>
+                  </span>
                 </div>
                 <div className="plan-feature">
                   <span className="feature-label">Total Return:</span>
-                  <span className="feature-value">${calc.totalAfterDays}</span>
+                  <span className="feature-value">
+                    ${calc.totalAfterDays}
+                    <span className="zar-value">(R{toZAR(calc.totalAfterDays)})</span>
+                  </span>
                 </div>
                 <div className="plan-feature">
                   <span className="feature-label">Duration:</span>

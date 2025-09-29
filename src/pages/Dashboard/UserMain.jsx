@@ -65,6 +65,10 @@ export default function UserMain(){
   const totalPortfolio = Number(account.capital) + Number(account.netProfit) + Number(account.referralEarnings)
   const availableWithdrawal = Number(account.netProfit) + Number(account.referralEarnings)
 
+  // ZAR conversion rate (frontend display only)
+  const ZAR_RATE = 17
+  const toZAR = (usd) => (Number(usd || 0) * ZAR_RATE).toFixed(2)
+
   // Determine latest active deposit start date (most-recent approved deposit)
   const activeDeposits = Array.isArray(account.deposits) ? account.deposits.filter(d => d && d.status === 'active' && (d.startDate || d.approvedAt)) : []
   // Some systems store startDate or approvedAt; prefer startDate then approvedAt
@@ -99,23 +103,38 @@ export default function UserMain(){
         <div className="overview-grid">
           <div className="overview-card primary">
             <div className="overview-label">Total Portfolio Balance</div>
-            <div className="overview-value">${totalPortfolio.toFixed(2)}</div>
+            <div className="overview-value">
+              ${totalPortfolio.toFixed(2)}
+              <span className="zar-value">(R{toZAR(totalPortfolio)})</span>
+            </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Investment Capital</div>
-            <div className="overview-value">${Number(account.capital).toFixed(2)}</div>
+            <div className="overview-value">
+              ${Number(account.capital).toFixed(2)}
+              <span className="zar-value">(R{toZAR(account.capital)})</span>
+            </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Available Withdrawal</div>
-            <div className="overview-value">${availableWithdrawal.toFixed(2)}</div>
+            <div className="overview-value">
+              ${availableWithdrawal.toFixed(2)}
+              <span className="zar-value">(R{toZAR(availableWithdrawal)})</span>
+            </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Net Profit</div>
-            <div className="overview-value">${Number(account.netProfit).toFixed(2)}</div>
+            <div className="overview-value">
+              ${Number(account.netProfit).toFixed(2)}
+              <span className="zar-value">(R{toZAR(account.netProfit)})</span>
+            </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Referral Earnings</div>
-            <div className="overview-value">${Number(account.referralEarnings).toFixed(2)}</div>
+            <div className="overview-value">
+              ${Number(account.referralEarnings).toFixed(2)}
+              <span className="zar-value">(R{toZAR(account.referralEarnings)})</span>
+            </div>
           </div>
         </div>
       </div>

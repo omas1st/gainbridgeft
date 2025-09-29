@@ -1,9 +1,18 @@
 // src/pages/AgentDashboard.jsx
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import '../styles/dashboard.css'
+import '../styles/agent-dashboard.css' // new CSS file (see below)
 import { useAuth } from '../contexts/AuthContext'
 import backend from '../services/api'
 import { useNavigate } from 'react-router-dom'
+
+// Move LEVELS to module scope so it's stable across renders (avoids exhaustive-deps warnings)
+const LEVELS = [
+  { id: 1, title: 'Level 1', requirement: 10, salary: 1000 },
+  { id: 2, title: 'Level 2', requirement: 25, salary: 4000 },
+  { id: 3, title: 'Level 3', requirement: 50, salary: 10000 },
+  { id: 4, title: 'Level 4', requirement: 100, salary: 20000 }
+]
 
 export default function AgentDashboard(){
   const { user } = useAuth()
@@ -73,6 +82,53 @@ export default function AgentDashboard(){
 
   const totalPortfolio = Number(overview.monthlyBonus) + Number(overview.totalReferralEarnings)
 
+  // ZAR conversion rate (frontend display only)
+  const ZAR_RATE = 17
+  const toZAR = (usd) => (Number(usd || 0) * ZAR_RATE).toFixed(2)
+
+  // -------------------------
+  // Agent levels data & helpers
+  // -------------------------
+
+  // Consider a referral as VERIFIED when it has a capital > 0 (i.e. deposited)
+  const verifiedReferrals = useMemo(() => referrals.filter(r => Number(r.capital) > 0), [referrals])
+  const verifiedCount = verifiedReferrals.length
+  const pendingCount = referrals.length - verifiedCount
+
+  // Determine current level and progress
+  const levelInfo = useMemo(() => {
+    // highest level where verifiedCount >= requirement
+    let achieved = LEVELS.slice().reverse().find(l => verifiedCount >= l.requirement) || null
+    if (!achieved) achieved = null
+
+    // next level (the first level with requirement > verifiedCount)
+    const next = LEVELS.find(l => l.requirement > verifiedCount) || null
+
+    // progress towards next level (relative between current level requirement and next)
+    let progressPercent = 0
+    if (!next) {
+      progressPercent = 100
+    } else {
+      const prevReq = achieved ? achieved.requirement : 0
+      const span = next.requirement - prevReq
+      progressPercent = span === 0 ? 100 : Math.min(100, Math.round(((verifiedCount - prevReq) / span) * 100))
+      if (progressPercent < 0) progressPercent = 0
+    }
+
+    return {
+      achieved,
+      next,
+      progressPercent
+    }
+  }, [verifiedCount])
+
+  const getLevelStatus = (level) => {
+    return verifiedCount >= level.requirement ? 'achieved' : (verifiedCount > 0 ? 'in-progress' : 'locked')
+  }
+
+  // -------------------------
+  // Render
+  // -------------------------
   return (
     <div className="dashboard-container">
       {/* Welcome Header */}
@@ -87,19 +143,105 @@ export default function AgentDashboard(){
         <div className="overview-grid">
           <div className="overview-card primary">
             <div className="overview-label">Total Portfolio Balance</div>
-            <div className="overview-value">${totalPortfolio.toFixed(2)}</div>
+            <div className="overview-value">
+              ${totalPortfolio.toFixed(2)}
+              <span className="zar-value">(R{toZAR(totalPortfolio)})</span>
+            </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Monthly Bonus</div>
-            <div className="overview-value">${Number(overview.monthlyBonus).toFixed(2)}</div>
+            <div className="overview-value">
+              ${Number(overview.monthlyBonus).toFixed(2)}
+              <span className="zar-value">(R{toZAR(overview.monthlyBonus)})</span>
+            </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Total Referral Earnings</div>
-            <div className="overview-value">${Number(overview.totalReferralEarnings).toFixed(2)}</div>
+            <div className="overview-value">
+              ${Number(overview.totalReferralEarnings).toFixed(2)}
+              <span className="zar-value">(R{toZAR(overview.totalReferralEarnings)})</span>
+            </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Available Withdrawal</div>
-            <div className="overview-value">${Number(overview.availableWithdrawal).toFixed(2)}</div>
+            <div className="overview-value">
+              ${Number(overview.availableWithdrawal).toFixed(2)}
+              <span className="zar-value">(R{toZAR(overview.availableWithdrawal)})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Agent Benefits & Requirements */}
+      <div className="agent-requirements-section">
+        <div className="action-card">
+          <h2 className="action-title">Agent Benefits & Qualification Requirements</h2>
+
+          <p className="agent-intro">
+            To qualify for an agent level within a calendar month, you must refer the required number of new users
+            via your unique agent referral link. Each referred user must complete a deposit within the same month
+            for the referral to count. Agents who meet a level's requirement receive the fixed monthly salary shown
+            for that level, plus a commission of <strong>10% of each referred user's invested capital</strong>.
+          </p>
+
+          <div className="agent-levels">
+            {LEVELS.map(level => (
+              <div key={level.id} className={`level-card ${getLevelStatus(level)}`}>
+                <div className="level-header">
+                  <div className="level-title">{level.title}</div>
+                  <div className="level-salary">Salary: R{level.salary.toLocaleString()}</div>
+                </div>
+                <div className="level-body">
+                  <div className="level-requirement">
+                    Requirement: <strong>{level.requirement} verified deposits</strong> within the month
+                  </div>
+                  <div className="level-commission">
+                    Commission: <strong>10% of capital</strong> from each referred user's deposit
+                  </div>
+                  <div className="level-status">
+                    Status: <span className="status-text">{getLevelStatus(level) === 'achieved' ? 'Achieved' : (getLevelStatus(level) === 'in-progress' ? 'In progress' : 'Locked')}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="agent-progress">
+            <div className="progress-summary">
+              <div className="progress-item">
+                <div className="progress-label">Verified referrals (deposited)</div>
+                <div className="progress-value">{verifiedCount}</div>
+              </div>
+              <div className="progress-item">
+                <div className="progress-label">Pending referrals (no deposit)</div>
+                <div className="progress-value">{pendingCount}</div>
+              </div>
+              <div className="progress-item">
+                <div className="progress-label">Current level</div>
+                <div className="progress-value">{levelInfo.achieved ? levelInfo.achieved.title : 'None'}</div>
+              </div>
+              <div className="progress-item">
+                <div className="progress-label">Progress to next level</div>
+                <div className="progress-value">{levelInfo.next ? `${levelInfo.progressPercent}%` : 'Max'}</div>
+              </div>
+            </div>
+
+            {levelInfo.next && (
+              <div className="progress-bar-wrap" aria-hidden>
+                <div className="progress-bar">
+                  <div className="progress-bar-fill" style={{ width: `${levelInfo.progressPercent}%` }} />
+                </div>
+                <div className="progress-note">
+                  You need <strong>{levelInfo.next.requirement - verifiedCount}</strong> more verified deposit(s) to reach <strong>{levelInfo.next.title}</strong>.
+                </div>
+              </div>
+            )}
+
+            {!levelInfo.next && (
+              <div className="progress-note">
+                You've reached the highest agent level. Keep building referrals to maintain your status and commissions.
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -212,8 +354,14 @@ export default function AgentDashboard(){
                 <div key={r._id} className="referral-item">
                   <div className="referral-email">{r.email}</div>
                   <div className="referral-details">
-                    <span className="referral-capital">Capital: ${r.capital || 0}</span>
-                    <span className="referral-earnings">Earnings: ${r.referralEarning || 0}</span>
+                    <span className="referral-capital">
+                      Capital: ${r.capital || 0}
+                      <span className="zar-value">(R{toZAR(r.capital || 0)})</span>
+                    </span>
+                    <span className="referral-earnings">
+                      Earnings: ${r.referralEarning || 0}
+                      <span className="zar-value">(R{toZAR(r.referralEarning || 0)})</span>
+                    </span>
                   </div>
                 </div>
               ))}
