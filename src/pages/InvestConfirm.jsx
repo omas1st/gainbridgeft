@@ -21,7 +21,7 @@ export default function InvestConfirm(){
   const USD_TO_ZAR = 17 // 1 USD ≈ 17 ZAR (display only)
   const zarAmount = plan ? Number(plan.amount) * USD_TO_ZAR : 0
 
-  useEffect(()=>{
+  useEffect(()=>{ 
     let mounted = true
     async function loadSettings(){
       try {
@@ -45,9 +45,11 @@ export default function InvestConfirm(){
   )
 
   // Use business days approximation for display: 60 calendar days ≈ 60 * 5/7 => ~42 business days
+  // NOTE: switched to SIMPLE-interest calculation (same as the invest page & backend)
   const businessDays = Math.floor((plan.days || 60) * 5 / 7)
-  const calcDaily = Number((plan.amount * (plan.rate/100))).toFixed(2)
-  const totalAfter = Number(plan.amount * Math.pow(1 + plan.rate/100, businessDays)).toFixed(2)
+  const dailyProfit = Number((plan.amount * (plan.rate / 100)).toFixed(2)) // simple interest per day
+  const totalProfit = Number((dailyProfit * businessDays).toFixed(2))
+  const totalAfter = Number((Number(plan.amount) + totalProfit).toFixed(2))
 
   function selectedMethod(){
     return methods.find(m => m.id === methodId) || null
@@ -111,7 +113,7 @@ export default function InvestConfirm(){
         <section className="confirm-payment-section">
           <h2 className="section-title">Confirm Payment</h2>
           <div className="payment-amount">
-            <span className="amount-usd">${plan.amount}</span>
+            <span className="amount-usd">${Number(plan.amount).toFixed(2)}</span>
             {zarAmount && <span className="amount-zar">≈ R{zarAmount.toFixed(2)} ZAR</span>}
           </div>
         </section>
@@ -122,7 +124,7 @@ export default function InvestConfirm(){
           <div className="details-grid">
             <div className="detail-item">
               <span className="detail-label">Daily Return:</span>
-              <span className="detail-value">${calcDaily}</span>
+              <span className="detail-value">${dailyProfit.toFixed(2)}</span>
             </div>
             <div className="detail-item">
               <span className="detail-label">Investment Period:</span>
@@ -130,7 +132,7 @@ export default function InvestConfirm(){
             </div>
             <div className="detail-item total-return">
               <span className="detail-label">Total After {plan.days} Days:</span>
-              <span className="detail-value">${totalAfter}</span>
+              <span className="detail-value">${totalAfter.toFixed(2)}</span>
             </div>
           </div>
         </section>
@@ -201,7 +203,7 @@ export default function InvestConfirm(){
                       </div>
                     </div>
                     <div className="payment-note">
-                      Make exact payment of ${plan.amount} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} and use the reference.
+                      Make exact payment of ${Number(plan.amount).toFixed(2)} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} and use the reference.
                       <div className="important-note" style={{marginTop:8,fontStyle:'italic'}}>
                         Note: Transfers via Capitec bank are not allowed — Capitec bank users should use an ATM deposit instead.
                       </div>
@@ -230,7 +232,7 @@ export default function InvestConfirm(){
                       </div>
                     </div>
                     <div className="payment-note">
-                      Make exact payment of ${plan.amount} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''}
+                      Make exact payment of ${Number(plan.amount).toFixed(2)} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} 
                     </div>
                   </div>
                 )}
@@ -276,7 +278,7 @@ export default function InvestConfirm(){
                   </div>
                 </div>
                 <div className="payment-note">
-                  Make exact payment of ${plan.amount} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} and use the reference.
+                  Make exact payment of ${Number(plan.amount).toFixed(2)} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} and use the reference.
                   <div className="important-note" style={{marginTop:8,fontStyle:'italic'}}>
                     Note: Transfers via Capitec bank are not allowed — Capitec bank users should use an ATM deposit instead.
                   </div>

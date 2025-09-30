@@ -53,14 +53,53 @@ export default function AdminRequests(){
 
   async function doApprove(){
     if(!modalData) return
-    const { request } = modalData
+    const { request, reqType } = modalData
     setModalLoading(true)
     try {
-      await backend.post(`/admin/requests/${request._id || request.id}/approve`, {})
+      const { data } = await backend.post(`/admin/requests/${request._id || request.id}/approve`, {})
+
+      // If API returned the updated transaction, apply update locally for immediacy
+      if (data && data.tx) {
+        const tx = data.tx
+        if (reqType === 'deposit') {
+          setDeposits(prev => prev.map(d => {
+            const id = d._id || d.id
+            const txId = tx._id || tx.id
+            if (String(id) === String(txId) || String(id) === String(tx.transactionId || tx.txId || tx._id)) {
+              return {
+                ...d,
+                status: tx.status || 'approved',
+                approvedAt: tx.approvedAt || (tx.details && tx.details.approvedAt) || new Date().toISOString(),
+                details: { ...(d.details || {}), ...(tx.details || {}) }
+              }
+            }
+            return d
+          }))
+        } else {
+          // withdrawal
+          setWithdrawals(prev => prev.map(w => {
+            const id = w._id || w.id
+            const txId = tx._id || tx.id
+            if (String(id) === String(txId) || String(id) === String(tx.transactionId || tx.txId || tx._id)) {
+              return {
+                ...w,
+                status: tx.status || 'approved',
+                approvedAt: tx.approvedAt || (tx.details && tx.details.approvedAt) || new Date().toISOString(),
+                details: { ...(w.details || {}), ...(tx.details || {}) }
+              }
+            }
+            return w
+          }))
+        }
+      } else {
+        // fallback: refetch list using current filters
+        const q = buildQuery()
+        const resp = await backend.get(`/admin/requests${q}`)
+        setDeposits(resp.data?.deposits || resp.deposits || [])
+        setWithdrawals(resp.data?.withdrawals || resp.withdrawals || [])
+      }
+
       setModalOpen(false)
-      const { data } = await backend.get(`/admin/requests${buildQuery()}`)
-      setDeposits(data.deposits || [])
-      setWithdrawals(data.withdrawals || [])
     } catch (err) {
       alert(err?.response?.data?.message || err.message)
     } finally {
@@ -252,7 +291,10 @@ export default function AdminRequests(){
                     {d.user?.email || d.userEmail || d.email} — ${Number(d.amount).toFixed(2)}
                   </div>
                   <div className="admin-request-meta">
-                    Plan: {d.details?.plan?.amount ? `$${d.details.plan.amount}` : '—'} • Method: {d.method || d.details?.method} • {formatDate(d.createdAt)}
+                    Plan: {d.details?.plan?.amount ? `$${d.details.plan.amount}` : (d.plan?.amount ? `$${d.plan.amount}` : '—')} • Method: {d.method || d.details?.method} • Created: {formatDate(d.createdAt)}
+                    { (d.approvedAt || (d.details && d.details.approvedAt)) && (
+                      <span> • Approved: {formatDate(d.approvedAt || d.details.approvedAt)}</span>
+                    )}
                   </div>
                 </div>
                 <div className="admin-request-actions">
@@ -280,7 +322,10 @@ export default function AdminRequests(){
                       {w.user?.email || w.userEmail || w.email} — ${Number(w.amount).toFixed(2)}
                     </div>
                     <div className="admin-request-meta">
-                      Method: {method} • Details: {method === 'bank' ? `${bank.bank || bank.bankName || '—'} / ${bank.accountNumber || bank.accNo || '—'}` : (crypto.walletAddress || crypto.address || '—')} • {formatDate(w.createdAt)}
+                      Method: {method} • Details: {method === 'bank' ? `${bank.bank || bank.bankName || '—'} / ${bank.accountNumber || bank.accNo || '—'}` : (crypto.walletAddress || crypto.address || '—')} • Created: {formatDate(w.createdAt)}
+                      { (w.approvedAt || (w.details && w.details.approvedAt)) && (
+                        <span> • Approved: {formatDate(w.approvedAt || w.details.approvedAt)}</span>
+                      )}
                     </div>
                   </div>
                   <div className="admin-request-actions">

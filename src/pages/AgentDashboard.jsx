@@ -8,10 +8,10 @@ import { useNavigate } from 'react-router-dom'
 
 // Move LEVELS to module scope so it's stable across renders (avoids exhaustive-deps warnings)
 const LEVELS = [
-  { id: 1, title: 'Level 1', requirement: 10, salary: 1000 },
-  { id: 2, title: 'Level 2', requirement: 25, salary: 4000 },
-  { id: 3, title: 'Level 3', requirement: 50, salary: 10000 },
-  { id: 4, title: 'Level 4', requirement: 100, salary: 20000 }
+  { id: 1, title: 'Level 1', requirement: 10, salary: 350 },
+  { id: 2, title: 'Level 2', requirement: 25, salary: 1000 },
+  { id: 3, title: 'Level 3', requirement: 50, salary: 3000 },
+  { id: 4, title: 'Level 4', requirement: 100, salary: 6000 }
 ]
 
 export default function AgentDashboard(){
@@ -181,7 +181,7 @@ export default function AgentDashboard(){
             To qualify for an agent level within a calendar month, you must refer the required number of new users
             via your unique agent referral link. Each referred user must complete a deposit within the same month
             for the referral to count. Agents who meet a level's requirement receive the fixed monthly salary shown
-            for that level, plus a commission of <strong>10% of each referred user's invested capital</strong>.
+            for that level, plus a commission of <strong>5% of each referred user's invested capital</strong>.
           </p>
 
           <div className="agent-levels">
@@ -196,7 +196,7 @@ export default function AgentDashboard(){
                     Requirement: <strong>{level.requirement} verified deposits</strong> within the month
                   </div>
                   <div className="level-commission">
-                    Commission: <strong>10% of capital</strong> from each referred user's deposit
+                    Commission: <strong>5% of capital</strong> from each referred user's deposit
                   </div>
                   <div className="level-status">
                     Status: <span className="status-text">{getLevelStatus(level) === 'achieved' ? 'Achieved' : (getLevelStatus(level) === 'in-progress' ? 'In progress' : 'Locked')}</span>

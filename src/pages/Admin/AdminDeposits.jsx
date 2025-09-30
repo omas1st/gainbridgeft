@@ -3,6 +3,8 @@ import backend from '../../services/api'
 import ConfirmModal from '../../components/ConfirmModal'
 import '../../styles/AdminDeposits.css'
 
+function fmt(d){ if(!d) return '—'; try { return new Date(d).toLocaleString() } catch(e){ return d } }
+
 export default function AdminDeposits(){
   const [deposits, setDeposits] = useState([])
   const [loading, setLoading] = useState(false)
@@ -37,10 +39,34 @@ export default function AdminDeposits(){
     if (!modalData) return
     setModalLoading(true)
     try {
-      await backend.post(`/admin/deposits/${modalData._id || modalData.id}/approve`)
+      // Use API response to update UI immediately if tx returned
+      const { data } = await backend.post(`/admin/deposits/${modalData._id || modalData.id}/approve`)
+
+      // if API returned the updated transaction, update local list in-place
+      if (data && data.tx) {
+        const tx = data.tx
+        setDeposits(prev => prev.map(d => {
+          if (!d) return d
+          const id = d._id || d.id
+          const txId = tx._id || tx.id
+          if (String(id) === String(txId) || String(id) === String(tx.transactionId || tx.txId || tx._id)) {
+            // Merge known fields: status, approvedAt, details
+            return {
+              ...d,
+              status: tx.status || 'approved',
+              approvedAt: tx.approvedAt || (tx.details && tx.details.approvedAt) || new Date().toISOString(),
+              details: { ...(d.details || {}), ...(tx.details || {}) }
+            }
+          }
+          return d
+        }))
+      } else {
+        // fallback: refetch the full list
+        const { data: refreshed } = await backend.get('/admin/deposits')
+        setDeposits(refreshed.deposits || [])
+      }
+
       setModalOpen(false)
-      const { data } = await backend.get('/admin/deposits')
-      setDeposits(data.deposits || [])
     } catch (err) {
       alert(err?.response?.data?.message || err.message)
     } finally {
@@ -81,7 +107,10 @@ export default function AdminDeposits(){
                   {d.userEmail || d.user?.email} — ${Number(d.amount).toFixed(2)}
                 </div>
                 <div className="admin-deposit-meta">
-                  Plan: {d.plan?.amount || '—'} • Method: {d.method} • {new Date(d.createdAt).toLocaleString()}
+                  Plan: {d.plan?.amount || (d.details && d.details.appliedPlan?.amount) || '—'} • Method: {d.method || d.details?.method} • Created: {fmt(d.createdAt)}
+                  { (d.approvedAt || (d.details && d.details.approvedAt)) && (
+                    <span> • Approved: {fmt(d.approvedAt || d.details.approvedAt)}</span>
+                  )}
                 </div>
               </div>
               <div className="admin-deposit-actions">
