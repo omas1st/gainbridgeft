@@ -1,3 +1,4 @@
+// src/components/Hero.jsx
 import React from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/hero.css'
@@ -14,6 +15,16 @@ export default function Hero(){
             {/* Added Login button */}
             <Link to="/login" className="hero-btn hero-btn-ghost">Login</Link>
             <a href="#about" className="hero-btn hero-btn-ghost">About</a>
+
+            {/* Download Application button (opens MediaFire link in a new tab) */}
+            <a
+              href="https://www.mediafire.com/file/kns8u4p82t6mz3q/Gainbridge.apk/file"
+              className="hero-btn hero-btn-primary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Download Application
+            </a>
           </div>
         </div>
         {/* hero-right intentionally removed per previous request */}
