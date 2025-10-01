@@ -16,7 +16,8 @@ export default function TeamBios(){
     {
       name: "Support Team",
       role: "Customer Success",
-      bio: "Available 24/7 to assist with any questions or concerns, ensuring you have the support you need throughout your investment journey."
+      bio: "Available 24/7 to assist with any questions or concerns, ensuring you have the support you need throughout your investment journey.",
+      contact: "Contact: Gainbridgeinvest@gmail.com"
     }
   ]
 
@@ -29,6 +30,7 @@ export default function TeamBios(){
             <div className="member-name">{member.name}</div>
             <div className="member-role">{member.role}</div>
             <div className="member-bio">{member.bio}</div>
+            {member.contact && <div className="member-contact">{member.contact}</div>}
           </div>
         ))}
       </div>
