@@ -8,10 +8,10 @@ import { useNavigate } from 'react-router-dom'
 
 // Move LEVELS to module scope so it's stable across renders (avoids exhaustive-deps warnings)
 const LEVELS = [
-  { id: 1, title: 'Level 1', requirement: 10, salary: 350 },
-  { id: 2, title: 'Level 2', requirement: 25, salary: 1000 },
-  { id: 3, title: 'Level 3', requirement: 50, salary: 3000 },
-  { id: 4, title: 'Level 4', requirement: 100, salary: 6000 }
+  { id: 1, title: 'Level 1', requirement: 10, salary: 1000 },
+  { id: 2, title: 'Level 2', requirement: 25, salary: 2500 },
+  { id: 3, title: 'Level 3', requirement: 50, salary: 5000 },
+  { id: 4, title: 'Level 4', requirement: 100, salary: 10000 }
 ]
 
 export default function AgentDashboard(){
@@ -229,8 +229,10 @@ export default function AgentDashboard(){
           <p className="agent-intro">
             To qualify for an agent level within a calendar month, you must refer the required number of new users
             via your unique agent referral link. Each referred user must complete a deposit within the same month
-            for the referral to count. Agents who meet a level's requirement receive the fixed monthly salary shown
-            for that level, plus a commission of <strong>5% of each referred user's invested capital</strong>.
+            for the referral to count. Agents who meet a level's requirement receive the fixed monthly Bonus shown
+            for that level, plus a commission of <strong>5% of each referred user's invested capital</strong>, Then 
+            send the screenshot of your current level at the end of each month, to our 
+            email: gainbridgeinvest@gmail.com, to be credited with your monthly bonus.
           </p>
 
           <div className="agent-levels">
@@ -238,7 +240,7 @@ export default function AgentDashboard(){
               <div key={level.id} className={`level-card ${getLevelStatus(level)}`}>
                 <div className="level-header">
                   <div className="level-title">{level.title}</div>
-                  <div className="level-salary">Salary: R{level.salary.toLocaleString()}</div>
+                  <div className="level-salary">Bonus: R{level.salary.toLocaleString()}</div>
                 </div>
                 <div className="level-body">
                   <div className="level-requirement">
