@@ -16,7 +16,14 @@ const LEVELS = [
 
 export default function AgentDashboard(){
   const { user } = useAuth()
-  const [overview, setOverview] = useState({ monthlyBonus: 0, totalReferralEarnings: 0, availableWithdrawal: 0 })
+  const [overview, setOverview] = useState({
+    monthlyBonus: 0,
+    capital: 0,
+    netProfit: 0,
+    referralEarnings: 0,
+    totalPortfolio: 0,
+    availableWithdrawal: 0
+  })
   const [referrals, setReferrals] = useState([])
   const nav = useNavigate()
 
@@ -27,20 +34,61 @@ export default function AgentDashboard(){
   const [sending, setSending] = useState(false)
   const [msgStatus, setMsgStatus] = useState(null)
 
+  // Fetch overview + referrals together (so totals reflect approved withdrawals)
   useEffect(()=>{
     let mounted = true
     async function load(){
       try{
         if (!user?.id) return
-        const { data } = await backend.get(`/users/${user.id}/referrals`)
+
+        // parallel requests for overview and referrals
+        const [ovRes, refRes] = await Promise.allSettled([
+          backend.get(`/users/${user.id}/overview`),
+          backend.get(`/users/${user.id}/referrals`)
+        ])
+
         if (!mounted) return
-        setReferrals(data.referrals || [])
-        const totalReferralEarnings = data.totalReferralEarnings || 0
-        setOverview({
-          monthlyBonus: user?.monthlyBonus || 0,
-          totalReferralEarnings,
-          availableWithdrawal: Number(user?.monthlyBonus || 0) + Number(totalReferralEarnings)
-        })
+
+        // referrals (keep previous mapping but prefer live data)
+        if (refRes.status === 'fulfilled' && refRes.value?.data) {
+          const data = refRes.value.data
+          setReferrals(data.referrals || [])
+        } else {
+          setReferrals([])
+          if (refRes.status === 'rejected') {
+            console.warn('failed to load referrals', refRes.reason)
+          }
+        }
+
+        // overview: authoritative totals (capital, netProfit, referralEarnings, totalPortfolio)
+        if (ovRes.status === 'fulfilled' && ovRes.value?.data && ovRes.value.data.overview) {
+          const o = ovRes.value.data.overview || {}
+          const capital = Number(o.capital || 0)
+          const netProfit = Number(o.netProfit || 0)
+          const referralEarnings = Number(o.referralEarnings || 0)
+          const totalPortfolio = Number(o.totalPortfolio || (capital + netProfit + referralEarnings))
+          const availableWithdrawal = Number((netProfit || 0) + (referralEarnings || 0))
+
+          setOverview({
+            monthlyBonus: Number(user?.monthlyBonus || 0),
+            capital,
+            netProfit,
+            referralEarnings,
+            totalPortfolio,
+            availableWithdrawal
+          })
+        } else {
+          // fallback: compute basic overview from user + referrals (keeps previous behavior if overview endpoint fails)
+          const totalReferralEarnings = (refRes.status === 'fulfilled' && refRes.value?.data) ? (refRes.value.data.totalReferralEarnings || 0) : 0
+          setOverview({
+            monthlyBonus: Number(user?.monthlyBonus || 0),
+            capital: Number(user?.capital || 0),
+            netProfit: Number(user?.netProfit || 0),
+            referralEarnings: Number(totalReferralEarnings),
+            totalPortfolio: Number(Number(user?.capital || 0) + Number(user?.netProfit || 0) + Number(totalReferralEarnings)),
+            availableWithdrawal: Number(Number(user?.netProfit || 0) + Number(totalReferralEarnings))
+          })
+        }
       }catch(err){
         console.warn('agent dashboard load err', err?.message || err)
       }
@@ -80,7 +128,8 @@ export default function AgentDashboard(){
     } finally { setSending(false) }
   }
 
-  const totalPortfolio = Number(overview.monthlyBonus) + Number(overview.totalReferralEarnings)
+  // Use overview totals (authoritative)
+  const totalPortfolio = Number(overview.totalPortfolio || 0)
 
   // ZAR conversion rate (frontend display only)
   const ZAR_RATE = 17
@@ -158,8 +207,8 @@ export default function AgentDashboard(){
           <div className="overview-card">
             <div className="overview-label">Total Referral Earnings</div>
             <div className="overview-value">
-              ${Number(overview.totalReferralEarnings).toFixed(2)}
-              <span className="zar-value">(R{toZAR(overview.totalReferralEarnings)})</span>
+              ${Number(overview.referralEarnings).toFixed(2)}
+              <span className="zar-value">(R{toZAR(overview.referralEarnings)})</span>
             </div>
           </div>
           <div className="overview-card">
