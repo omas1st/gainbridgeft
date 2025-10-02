@@ -1,12 +1,20 @@
 // src/pages/AgentDashboard.jsx
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import '../styles/dashboard.css'
-import '../styles/agent-dashboard.css' // new CSS file (see below)
+import '../styles/agent-dashboard.css'
 import { useAuth } from '../contexts/AuthContext'
 import backend from '../services/api'
 import { useNavigate } from 'react-router-dom'
 
-// Move LEVELS to module scope so it's stable across renders (avoids exhaustive-deps warnings)
+// Currency configuration
+const CURRENCY_CONFIG = {
+  'South Africa': { code: 'ZAR', rate: 17, symbol: 'R' },
+  'Nigeria': { code: 'NGN', rate: 1500, symbol: '₦' },
+  'Ghana': { code: 'GHS', rate: 12.50, symbol: 'GH₵' },
+  'Philippines': { code: 'PHP', rate: 58, symbol: '₱' }
+};
+
+// Move LEVELS to module scope
 const LEVELS = [
   { id: 1, title: 'Level 1', requirement: 10, salary: 1000 },
   { id: 2, title: 'Level 2', requirement: 25, salary: 2500 },
@@ -34,7 +42,25 @@ export default function AgentDashboard(){
   const [sending, setSending] = useState(false)
   const [msgStatus, setMsgStatus] = useState(null)
 
-  // Fetch overview + referrals together (so totals reflect approved withdrawals)
+  // Get currency configuration based on user's country
+  const getCurrencyConfig = () => {
+    const userCountry = user?.country;
+    return CURRENCY_CONFIG[userCountry] || null;
+  };
+
+  // Format converted amount
+  const formatConvertedAmount = (usdAmount) => {
+    const currencyConfig = getCurrencyConfig();
+    if (!currencyConfig) return null;
+    
+    const converted = (Number(usdAmount || 0) * currencyConfig.rate).toFixed(2);
+    return `(${currencyConfig.symbol}${converted})`;
+  };
+
+  const currencyConfig = getCurrencyConfig();
+  const showCurrencyConversion = currencyConfig !== null;
+
+  // Fetch overview + referrals together
   useEffect(()=>{
     let mounted = true
     async function load(){
@@ -49,7 +75,7 @@ export default function AgentDashboard(){
 
         if (!mounted) return
 
-        // referrals (keep previous mapping but prefer live data)
+        // referrals
         if (refRes.status === 'fulfilled' && refRes.value?.data) {
           const data = refRes.value.data
           setReferrals(data.referrals || [])
@@ -60,7 +86,7 @@ export default function AgentDashboard(){
           }
         }
 
-        // overview: authoritative totals (capital, netProfit, referralEarnings, totalPortfolio)
+        // overview
         if (ovRes.status === 'fulfilled' && ovRes.value?.data && ovRes.value.data.overview) {
           const o = ovRes.value.data.overview || {}
           const capital = Number(o.capital || 0)
@@ -78,7 +104,6 @@ export default function AgentDashboard(){
             availableWithdrawal
           })
         } else {
-          // fallback: compute basic overview from user + referrals (keeps previous behavior if overview endpoint fails)
           const totalReferralEarnings = (refRes.status === 'fulfilled' && refRes.value?.data) ? (refRes.value.data.totalReferralEarnings || 0) : 0
           setOverview({
             monthlyBonus: Number(user?.monthlyBonus || 0),
@@ -130,10 +155,6 @@ export default function AgentDashboard(){
 
   // Use overview totals (authoritative)
   const totalPortfolio = Number(overview.totalPortfolio || 0)
-
-  // ZAR conversion rate (frontend display only)
-  const ZAR_RATE = 17
-  const toZAR = (usd) => (Number(usd || 0) * ZAR_RATE).toFixed(2)
 
   // -------------------------
   // Agent levels data & helpers
@@ -194,28 +215,36 @@ export default function AgentDashboard(){
             <div className="overview-label">Total Portfolio Balance</div>
             <div className="overview-value">
               ${totalPortfolio.toFixed(2)}
-              <span className="zar-value">(R{toZAR(totalPortfolio)})</span>
+              {showCurrencyConversion && (
+                <span className="zar-value">{formatConvertedAmount(totalPortfolio)}</span>
+              )}
             </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Monthly Bonus</div>
             <div className="overview-value">
               ${Number(overview.monthlyBonus).toFixed(2)}
-              <span className="zar-value">(R{toZAR(overview.monthlyBonus)})</span>
+              {showCurrencyConversion && (
+                <span className="zar-value">{formatConvertedAmount(overview.monthlyBonus)}</span>
+              )}
             </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Total Referral Earnings</div>
             <div className="overview-value">
               ${Number(overview.referralEarnings).toFixed(2)}
-              <span className="zar-value">(R{toZAR(overview.referralEarnings)})</span>
+              {showCurrencyConversion && (
+                <span className="zar-value">{formatConvertedAmount(overview.referralEarnings)}</span>
+              )}
             </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Available Withdrawal</div>
             <div className="overview-value">
               ${Number(overview.availableWithdrawal).toFixed(2)}
-              <span className="zar-value">(R{toZAR(overview.availableWithdrawal)})</span>
+              {showCurrencyConversion && (
+                <span className="zar-value">{formatConvertedAmount(overview.availableWithdrawal)}</span>
+              )}
             </div>
           </div>
         </div>
@@ -407,11 +436,15 @@ export default function AgentDashboard(){
                   <div className="referral-details">
                     <span className="referral-capital">
                       Capital: ${r.capital || 0}
-                      <span className="zar-value">(R{toZAR(r.capital || 0)})</span>
+                      {showCurrencyConversion && (
+                        <span className="zar-value">{formatConvertedAmount(r.capital || 0)}</span>
+                      )}
                     </span>
                     <span className="referral-earnings">
                       Earnings: ${r.referralEarning || 0}
-                      <span className="zar-value">(R{toZAR(r.referralEarning || 0)})</span>
+                      {showCurrencyConversion && (
+                        <span className="zar-value">{formatConvertedAmount(r.referralEarning || 0)}</span>
+                      )}
                     </span>
                   </div>
                 </div>

@@ -1,9 +1,16 @@
-// src/pages/InvestConfirm.jsx
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import backend from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
 import '../styles/InvestConfirm.css'
+
+// Currency configuration
+const CURRENCY_CONFIG = {
+  'South Africa': { code: 'ZAR', rate: 17, symbol: 'R' },
+  'Nigeria': { code: 'NGN', rate: 1500, symbol: '₦' },
+  'Ghana': { code: 'GHS', rate: 12.50, symbol: 'GH₵' },
+  'Philippines': { code: 'PHP', rate: 58, symbol: '₱' }
+};
 
 export default function InvestConfirm(){
   const loc = useLocation()
@@ -11,15 +18,33 @@ export default function InvestConfirm(){
   const { user } = useAuth()
   const plan = loc.state?.plan
   const [methodId, setMethodId] = useState(null)
-  const [methods, setMethods] = useState([])
+  const [filteredMethods, setFilteredMethods] = useState([])
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState(null)
-  const [copiedField, setCopiedField] = useState(null) // Track which field was copied
+  const [copiedField, setCopiedField] = useState(null)
 
-  // Fixed conversion rate (display-only) — do not use this to change the payment amount sent to backend.
-  const USD_TO_ZAR = 17 // 1 USD ≈ 17 ZAR (display only)
-  const zarAmount = plan ? Number(plan.amount) * USD_TO_ZAR : 0
+  // Get currency configuration based on user's country
+  const getCurrencyConfig = () => {
+    const userCountry = user?.country;
+    return CURRENCY_CONFIG[userCountry] || null;
+  };
+
+  // Format converted amount for display
+  const formatConvertedAmount = (usdAmount) => {
+    const currencyConfig = getCurrencyConfig();
+    if (!currencyConfig) return null;
+    
+    const converted = (Number(usdAmount || 0) * currencyConfig.rate).toFixed(2);
+    return `${currencyConfig.symbol}${converted}`;
+  };
+
+  const currencyConfig = getCurrencyConfig();
+  const showCurrencyConversion = currencyConfig !== null;
+  const convertedAmount = plan ? formatConvertedAmount(plan.amount) : null;
+  
+  // Check if user is from South Africa
+  const isSouthAfrican = user?.country === 'South Africa';
 
   useEffect(()=>{ 
     let mounted = true
@@ -27,16 +52,40 @@ export default function InvestConfirm(){
       try {
         const { data } = await backend.get('/settings')
         if (!mounted) return
-        const pm = (data.settings && data.settings.paymentMethods) ? data.settings.paymentMethods : []
-        setMethods(pm)
-        if (pm.length > 0) setMethodId(pm[0].id)
+        const paymentMethods = (data.settings && data.settings.paymentMethods) ? data.settings.paymentMethods : []
+        
+        // Filter methods based on user's country
+        let filtered = [];
+        if (isSouthAfrican) {
+          // For South African users, show both bank and crypto methods
+          filtered = paymentMethods;
+        } else {
+          // For non-South African users, show only crypto methods
+          filtered = paymentMethods.filter(method => 
+            method.type === 'crypto' || 
+            (method.label && method.label.toLowerCase().includes('crypto')) ||
+            (method.details && method.details.crypto)
+          );
+          
+          // If no crypto methods found, keep all methods but default to crypto
+          if (filtered.length === 0 && paymentMethods.length > 0) {
+            filtered = paymentMethods;
+          }
+        }
+        
+        setFilteredMethods(filtered);
+        
+        // Set default method
+        if (filtered.length > 0) {
+          setMethodId(filtered[0].id);
+        }
       } catch (err) {
         console.warn('load settings', err)
       }
     }
     loadSettings()
     return ()=> { mounted = false }
-  },[])
+  },[isSouthAfrican])
 
   if(!plan) return (
     <div className="container">
@@ -45,14 +94,13 @@ export default function InvestConfirm(){
   )
 
   // Use business days approximation for display: 60 calendar days ≈ 60 * 5/7 => ~42 business days
-  // NOTE: switched to SIMPLE-interest calculation (same as the invest page & backend)
   const businessDays = Math.floor((plan.days || 60) * 5 / 7)
-  const dailyProfit = Number((plan.amount * (plan.rate / 100)).toFixed(2)) // simple interest per day
+  const dailyProfit = Number((plan.amount * (plan.rate / 100)).toFixed(2))
   const totalProfit = Number((dailyProfit * businessDays).toFixed(2))
   const totalAfter = Number((Number(plan.amount) + totalProfit).toFixed(2))
 
   function selectedMethod(){
-    return methods.find(m => m.id === methodId) || null
+    return filteredMethods.find(m => m.id === methodId) || null
   }
 
   async function markPaid(){
@@ -62,13 +110,8 @@ export default function InvestConfirm(){
     if (!methodId) { setError('Please select a payment method'); return }
     setLoading(true)
     try {
-      // Send only the method id to avoid backend/model casting issues.
-      // Backend will store method id in the transaction.method field and keep the full method details in details.method (if needed).
-      // IMPORTANT: we send the USD amount (plan.amount) — the ZAR conversion shown on this page is display-only and does not change the amount sent to the server.
       await backend.post(`/users/${user.id}/deposit`, { amount: plan.amount, method: methodId, plan })
-      // show pending message, then redirect
       setMsg('Payment request submitted — your payment is now pending. Your account will be credited within 24 hours once the payment is confirmed by an administrator.')
-      // Redirect after a short moment so user reads message
       setTimeout(()=> nav('/dashboard'), 2200)
     } catch (err) {
       setError(err?.response?.data?.message || err.message || 'Failed to notify payment')
@@ -114,7 +157,9 @@ export default function InvestConfirm(){
           <h2 className="section-title">Confirm Payment</h2>
           <div className="payment-amount">
             <span className="amount-usd">${Number(plan.amount).toFixed(2)}</span>
-            {zarAmount && <span className="amount-zar">≈ R{zarAmount.toFixed(2)} ZAR</span>}
+            {showCurrencyConversion && (
+              <span className="amount-zar">≈ {convertedAmount} {currencyConfig?.code}</span>
+            )}
           </div>
         </section>
 
@@ -124,7 +169,14 @@ export default function InvestConfirm(){
           <div className="details-grid">
             <div className="detail-item">
               <span className="detail-label">Daily Return:</span>
-              <span className="detail-value">${dailyProfit.toFixed(2)}</span>
+              <span className="detail-value">
+                ${dailyProfit.toFixed(2)}
+                {showCurrencyConversion && (
+                  <span style={{fontSize: '0.9em', color: '#666', marginLeft: '4px'}}>
+                    ({formatConvertedAmount(dailyProfit)})
+                  </span>
+                )}
+              </span>
             </div>
             <div className="detail-item">
               <span className="detail-label">Investment Period:</span>
@@ -132,7 +184,14 @@ export default function InvestConfirm(){
             </div>
             <div className="detail-item total-return">
               <span className="detail-label">Total After {plan.days} Days:</span>
-              <span className="detail-value">${totalAfter.toFixed(2)}</span>
+              <span className="detail-value">
+                ${totalAfter.toFixed(2)}
+                {showCurrencyConversion && (
+                  <span style={{fontSize: '0.9em', color: '#666', marginLeft: '4px'}}>
+                    ({formatConvertedAmount(totalAfter)})
+                  </span>
+                )}
+              </span>
             </div>
           </div>
         </section>
@@ -147,9 +206,20 @@ export default function InvestConfirm(){
               onChange={e=>setMethodId(e.target.value)}
               className="method-dropdown"
             >
-              {methods.map(m => <option key={m.id} value={m.id}>{m.label || `${m.type} — ${m.id}`}</option>)}
-              {methods.length === 0 && <option value="bank">Bank transfer</option>}
+              {filteredMethods.map(m => (
+                <option key={m.id} value={m.id}>
+                  {m.label || `${m.type} — ${m.id}`}
+                </option>
+              ))}
+              {filteredMethods.length === 0 && (
+                <option value="crypto">Cryptocurrency</option>
+              )}
             </select>
+            {!isSouthAfrican && (
+              <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#666' }}>
+                Cryptocurrency payment is required for your region.
+              </div>
+            )}
           </div>
         </section>
 
@@ -203,7 +273,9 @@ export default function InvestConfirm(){
                       </div>
                     </div>
                     <div className="payment-note">
-                      Make exact payment of ${Number(plan.amount).toFixed(2)} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} and use the reference.
+                      Make exact payment of ${Number(plan.amount).toFixed(2)} 
+                      {showCurrencyConversion && ` (≈ ${convertedAmount} ${currencyConfig?.code})`} 
+                      and use the reference.
                       <div className="important-note" style={{marginTop:8,fontStyle:'italic'}}>
                         Note: Transfers via Capitec bank are not allowed — Capitec bank users should use an ATM deposit instead.
                       </div>
@@ -232,7 +304,8 @@ export default function InvestConfirm(){
                       </div>
                     </div>
                     <div className="payment-note">
-                      Make exact payment of ${Number(plan.amount).toFixed(2)} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} 
+                      Make exact payment of ${Number(plan.amount).toFixed(2)} 
+                      {showCurrencyConversion && ` (≈ ${convertedAmount} ${currencyConfig?.code})`}
                     </div>
                   </div>
                 )}
@@ -244,44 +317,27 @@ export default function InvestConfirm(){
                 )}
               </>
             ) : (
-              <div className="bank-details">
+              // Fallback for when no methods are available
+              <div className="crypto-details">
                 <div className="detail-row">
-                  <span className="detail-label">Bank:</span>
-                  <span className="detail-value">FnB</span>
+                  <span className="detail-label">Cryptocurrency:</span>
+                  <span className="detail-value">Bitcoin</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-label">Account Name:</span>
-                  <span className="detail-value">GainBridge</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Account Number:</span>
+                  <span className="detail-label">Wallet Address:</span>
                   <div className="detail-with-copy">
-                    <span className="detail-value">62509963139</span>
+                    <span className="detail-value">3Liim5xHAkLEgUjzfw2DNFqbEkzaXgWWu8</span>
                     <button 
-                      className={`copy-btn ${isCopied('fallback-account') ? 'copied' : ''}`} 
-                      onClick={()=>copyToClipboard('62509963139', 'fallback-account')}
+                      className={`copy-btn ${isCopied('fallback-wallet') ? 'copied' : ''}`} 
+                      onClick={()=>copyToClipboard('3Liim5xHAkLEgUjzfw2DNFqbEkzaXgWWu8', 'fallback-wallet')}
                     >
-                      {isCopied('fallback-account') ? '✓ Copied!' : 'Copy'}
-                    </button>
-                  </div>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Reference (Compulsory):</span>
-                  <div className="detail-with-copy">
-                    <span className="detail-value">0657350788</span>
-                    <button 
-                      className={`copy-btn ${isCopied('fallback-reference') ? 'copied' : ''}`} 
-                      onClick={()=>copyToClipboard('0657350788', 'fallback-reference')}
-                    >
-                      {isCopied('fallback-reference') ? '✓ Copied!' : 'Copy'}
+                      {isCopied('fallback-wallet') ? '✓ Copied!' : 'Copy'}
                     </button>
                   </div>
                 </div>
                 <div className="payment-note">
-                  Make exact payment of ${Number(plan.amount).toFixed(2)} {zarAmount ? `(≈ R${zarAmount.toFixed(2)} ZAR)` : ''} and use the reference.
-                  <div className="important-note" style={{marginTop:8,fontStyle:'italic'}}>
-                    Note: Transfers via Capitec bank are not allowed — Capitec bank users should use an ATM deposit instead.
-                  </div>
+                  Make exact payment of ${Number(plan.amount).toFixed(2)} 
+                  {showCurrencyConversion && ` (≈ ${convertedAmount} ${currencyConfig?.code})`}
                 </div>
               </div>
             )}

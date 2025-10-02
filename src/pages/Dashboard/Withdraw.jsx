@@ -8,12 +8,17 @@ const SA_BANKS = [
   'FNB', 'Standard Bank', 'Absa', 'Nedbank', 'Capitec', 'Investec', 'Postbank', 'Mercantile Bank', 'TymeBank', 'African Bank'
 ]
 
-// Conversion rate constant (1 USD = 17 ZAR)
-const ZAR_RATE = 17
+// Currency configuration
+const CURRENCY_CONFIG = {
+  'South Africa': { code: 'ZAR', rate: 17, symbol: 'R' },
+  'Nigeria': { code: 'NGN', rate: 1500, symbol: '₦' },
+  'Ghana': { code: 'GHS', rate: 12.50, symbol: 'GH₵' },
+  'Philippines': { code: 'PHP', rate: 58, symbol: '₱' }
+};
 
 export default function Withdraw(){
   const { user } = useAuth()
-  const [method, setMethod] = useState('bank')
+  const [method, setMethod] = useState('')
   const [amount, setAmount] = useState('')
   const [bank, setBank] = useState(SA_BANKS[0])
   const [accountNumber, setAccountNumber] = useState('')
@@ -27,9 +32,39 @@ export default function Withdraw(){
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
 
-  // Available withdrawal amount (USD) for this user, fetched from backend overview.
+  // Available withdrawal amount
   const [availableUSD, setAvailableUSD] = useState(null)
   const [loadingAvailable, setLoadingAvailable] = useState(true)
+
+  // Get currency configuration based on user's country
+  const getCurrencyConfig = () => {
+    const userCountry = user?.country;
+    return CURRENCY_CONFIG[userCountry] || null;
+  };
+
+  // Format converted amount
+  const formatConvertedAmount = (usdAmount) => {
+    const currencyConfig = getCurrencyConfig();
+    if (!currencyConfig) return '';
+    
+    const converted = (Number(usdAmount || 0) * currencyConfig.rate).toFixed(2);
+    return `${currencyConfig.symbol}${converted}`;
+  };
+
+  const currencyConfig = getCurrencyConfig();
+  const showCurrencyConversion = currencyConfig !== null;
+  
+  // Check if user is from South Africa
+  const isSouthAfrican = user?.country === 'South Africa';
+
+  // Set default method based on user's country
+  useEffect(() => {
+    if (isSouthAfrican) {
+      setMethod('bank');
+    } else {
+      setMethod('crypto');
+    }
+  }, [isSouthAfrican]);
 
   useEffect(() => {
     let mounted = true
@@ -41,18 +76,15 @@ export default function Withdraw(){
       }
       setLoadingAvailable(true)
       try {
-        // fetch latest overview (backend computes netProfit, etc.)
         const res = await backend.get(`/users/${user.id}/overview`)
         const overview = res?.data?.overview || {}
         const netProfit = Number(overview.netProfit || 0)
         const referralEarnings = Number(overview.referralEarnings || 0)
         const available = Number((netProfit + referralEarnings) || 0)
         if (mounted) {
-          // round to 2 decimals
           setAvailableUSD(Number(available.toFixed(2)))
         }
       } catch (err) {
-        // fallback: if frontend has user fields, try to use them
         const fallbackAvailable = Number((user?.netProfit || 0) + (user?.referralEarnings || 0))
         if (mounted) setAvailableUSD(Number((fallbackAvailable || 0).toFixed(2)))
       } finally {
@@ -63,12 +95,6 @@ export default function Withdraw(){
     return () => { mounted = false }
   }, [user])
 
-  function usdToZar(val) {
-    const n = Number(val || 0)
-    if (isNaN(n)) return 'R0.00'
-    return `R${(n * ZAR_RATE).toFixed(2)}`
-  }
-
   function validateAmountValue(val) {
     const n = Number(val)
     if (isNaN(n)) return { ok: false, message: 'Invalid amount' }
@@ -77,8 +103,6 @@ export default function Withdraw(){
     return { ok: true }
   }
 
-  // Instead of POSTing immediately, navigate to preview with payload and userId.
-  // The preview page will POST to the proper backend endpoint when user confirms.
   async function handleProceed(e){
     e.preventDefault()
     setError(null)
@@ -88,14 +112,12 @@ export default function Withdraw(){
     if (!amount || Number(amount) <= 0) { setError('Please enter a valid amount'); return }
 
     const amountNum = Number(amount)
-    // validate min & max
     const amountValidation = validateAmountValue(amountNum)
     if (!amountValidation.ok) {
       setError(amountValidation.message)
       return
     }
 
-    // validate method-specific required fields
     if (method === 'bank') {
       if (!accountNumber || String(accountNumber).trim() === '') {
         setError('Account number is required for bank transfers')
@@ -117,7 +139,6 @@ export default function Withdraw(){
 
     setSubmitting(true)
     try {
-      // Navigate to preview; preview will perform the final POST to `/users/:id/withdraw`
       nav('/dashboard/withdraw/preview', { state: { payload, userId: user.id } })
     } catch (err) {
       setError(err?.message || 'Navigation failed')
@@ -126,8 +147,8 @@ export default function Withdraw(){
     }
   }
 
-  const convertedAmountZAR = amount ? usdToZar(amount) : 'R0.00'
-  const availableZAR = (availableUSD !== null) ? usdToZar(availableUSD) : 'R0.00'
+  const convertedAmount = amount ? formatConvertedAmount(amount) : showCurrencyConversion ? formatConvertedAmount(0) : ''
+  const availableConverted = (availableUSD !== null) ? formatConvertedAmount(availableUSD) : showCurrencyConversion ? formatConvertedAmount(0) : ''
   const minAmount = 2
   const maxAmountAttr = (availableUSD !== null && !isNaN(availableUSD)) ? availableUSD : undefined
 
@@ -136,32 +157,47 @@ export default function Withdraw(){
       <div className="withdraw-card">
         <h2 className="withdraw-header">Withdraw Funds</h2>
 
-        {/* Top: show available withdrawal with ZAR conversion */}
+        {/* Top: show available withdrawal with currency conversion */}
         <div className="available-row" style={{ marginBottom: 12 }}>
           <strong>Available to withdraw:&nbsp;</strong>
           {loadingAvailable ? (
             <span>Loading...</span>
           ) : (
-            <span>${availableUSD !== null ? availableUSD.toFixed(2) : '0.00'} &nbsp;({availableZAR})</span>
+            <span>
+              ${availableUSD !== null ? availableUSD.toFixed(2) : '0.00'}
+              {showCurrencyConversion && (
+                <span> &nbsp;({availableConverted})</span>
+              )}
+            </span>
           )}
         </div>
 
-        <div className="method-toggle">
-          <button
-            type="button"
-            className={`method-option ${method === 'bank' ? 'active' : ''}`}
-            onClick={() => setMethod('bank')}
-          >
-            Bank Transfer
-          </button>
-          <button
-            type="button"
-            className={`method-option ${method === 'crypto' ? 'active' : ''}`}
-            onClick={() => setMethod('crypto')}
-          >
-            Cryptocurrency
-          </button>
-        </div>
+        {/* Method Toggle - Only show if user is from South Africa */}
+        {isSouthAfrican && (
+          <div className="method-toggle">
+            <button
+              type="button"
+              className={`method-option ${method === 'bank' ? 'active' : ''}`}
+              onClick={() => setMethod('bank')}
+            >
+              Bank Transfer
+            </button>
+            <button
+              type="button"
+              className={`method-option ${method === 'crypto' ? 'active' : ''}`}
+              onClick={() => setMethod('crypto')}
+            >
+              Cryptocurrency
+            </button>
+          </div>
+        )}
+
+        {/* Display method info for non-South African users */}
+        {!isSouthAfrican && (
+          <div className="method-info" style={{ marginBottom: '1rem', padding: '0.75rem', background: '#f8f9fa', borderRadius: '8px' }}>
+            <strong>Withdrawal Method:</strong> Cryptocurrency
+          </div>
+        )}
 
         <form onSubmit={handleProceed} className="withdraw-form">
           <div className="form-group">
@@ -180,7 +216,7 @@ export default function Withdraw(){
               />
             </div>
             <small className="field-subtext">
-              {convertedAmountZAR} — Min ${minAmount}{availableUSD !== null ? `, Max $${availableUSD.toFixed(2)}` : ''}
+              {convertedAmount && `${convertedAmount} — `}Min ${minAmount}{availableUSD !== null ? `, Max $${availableUSD.toFixed(2)}` : ''}
             </small>
           </div>
 

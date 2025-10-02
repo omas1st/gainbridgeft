@@ -5,21 +5,15 @@ import { useAuth } from '../../contexts/AuthContext'
 import backend from '../../services/api'
 import { useNavigate } from 'react-router-dom'
 import CountdownTimer from '../../components/CountdownTimer'
-import { profitForDeposit } from '../../utils/calcProfit' // frontend profit helper (minute-accurate)
+import { profitForDeposit } from '../../utils/calcProfit'
 
-/**
- * UserMain (Dashboard)
- *
- * - Loads server snapshot of user's overview (capital, netProfit, referralEarnings, deposits).
- * - Builds a local snapshot of deposits' profit as-of the snapshot time.
- * - Starts a lightweight per-second client tick that:
- *     - computes current profit for each deposit (using profitForDeposit with `asOf`)
- *     - computes delta since snapshot and applies to server netProfit snapshot
- *     - updates the UI live (smooth minute-by-minute / second-by-second visual)
- * - Periodically re-syncs the server snapshot (every 5 minutes) to pick up withdrawals / admin changes.
- *
- * This design makes the UI feel live and accurate while keeping server as the source of truth.
- */
+// Currency configuration
+const CURRENCY_CONFIG = {
+  'South Africa': { code: 'ZAR', rate: 17, symbol: 'R' },
+  'Nigeria': { code: 'NGN', rate: 1500, symbol: '₦' },
+  'Ghana': { code: 'GHS', rate: 12.50, symbol: 'GH₵' },
+  'Philippines': { code: 'PHP', rate: 58, symbol: '₱' }
+};
 
 export default function UserMain(){
   const { user } = useAuth()
@@ -39,17 +33,32 @@ export default function UserMain(){
   const [sending, setSending] = useState(false)
   const [msgStatus, setMsgStatus] = useState(null)
 
-  // Refs to hold snapshot information (mutable, to avoid rerender storms)
+  // Refs to hold snapshot information
   const snapshotRef = useRef({
-    serverNetProfit: Number(user?.netProfit || 0), // netProfit returned by server at last sync
-    snapshotTime: new Date(), // local time when snapshot was taken
-    depositProfitAtSnapshot: new Map() // map depositKey -> profit at snapshotTime
+    serverNetProfit: Number(user?.netProfit || 0),
+    snapshotTime: new Date(),
+    depositProfitAtSnapshot: new Map()
   })
 
-  const tickRef = useRef(null)      // per-second UI tick
-  const resyncRef = useRef(null)    // periodic full server resync
+  const tickRef = useRef(null)
+  const resyncRef = useRef(null)
 
-  // Helper: unique deposit key (use _id if present, fallback to start+amount)
+  // Get currency configuration based on user's country
+  const getCurrencyConfig = () => {
+    const userCountry = user?.country;
+    return CURRENCY_CONFIG[userCountry] || null;
+  };
+
+  // Format converted amount
+  const formatConvertedAmount = (usdAmount) => {
+    const currencyConfig = getCurrencyConfig();
+    if (!currencyConfig) return null;
+    
+    const converted = (Number(usdAmount || 0) * currencyConfig.rate).toFixed(2);
+    return `(${currencyConfig.symbol}${converted})`;
+  };
+
+  // Helper: unique deposit key
   const depositKey = (d) => {
     if (!d) return null
     if (d._id) return String(d._id)
@@ -85,7 +94,7 @@ export default function UserMain(){
     } finally { setSending(false) }
   }
 
-  // Core: load server overview snapshot and prepare client snapshot baseline
+  // Core: load server overview snapshot
   const loadOverview = useCallback(async () => {
     if (!user?.id) return
     try {
@@ -93,18 +102,13 @@ export default function UserMain(){
       if (!data?.overview) return
 
       const ov = data.overview
-
-      // Save account overview (server snapshot values)
       setAccount(ov)
 
-      // Prepare snapshot: server netProfit (already computed server-side),
-      // snapshotTime (now), and per-deposit profit at snapshotTime (using frontend helper)
       const now = new Date()
       const perDeposit = new Map()
       const deposits = Array.isArray(ov.deposits) ? ov.deposits : []
       for (const d of deposits) {
         try {
-          // compute profit for this deposit as-of snapshotTime
           const p = Number(profitForDeposit(d, now) || 0)
           perDeposit.set(depositKey(d), p)
         } catch (e) {
@@ -115,8 +119,6 @@ export default function UserMain(){
       snapshotRef.current.serverNetProfit = Number(ov.netProfit || 0)
       snapshotRef.current.snapshotTime = now
       snapshotRef.current.depositProfitAtSnapshot = perDeposit
-
-      // Set base live netProfit to server netProfit (UI will apply deltas from tick)
       setLiveNetProfit(Number(ov.netProfit || 0))
     } catch (err) {
       console.warn('loadOverview error', err?.message || err)
@@ -125,10 +127,8 @@ export default function UserMain(){
 
   // Start client-side ticking & periodic server resync
   useEffect(() => {
-    // Initial load
     loadOverview()
 
-    // Clear existing timers if any
     if (tickRef.current) {
       clearInterval(tickRef.current)
       tickRef.current = null
@@ -138,10 +138,8 @@ export default function UserMain(){
       resyncRef.current = null
     }
 
-    // Per-second UI tick to compute liveNetProfit using profitForDeposit diffs
     tickRef.current = setInterval(() => {
       const now = new Date()
-      // Sum current profit for each deposit and subtract snapshot profit to get delta
       const deposits = Array.isArray(account.deposits) ? account.deposits : []
       let deltaGross = 0
       for (const d of deposits) {
@@ -151,38 +149,28 @@ export default function UserMain(){
           const profitAtSnapshot = snapshotRef.current.depositProfitAtSnapshot.get(key) || 0
           deltaGross += (profitNow - profitAtSnapshot)
         } catch (e) {
-          // ignore problematic deposit, continue
+          // ignore problematic deposit
         }
       }
 
-      // liveNet = serverNetProfit (snapshot) + deltaGross
       const live = Number(snapshotRef.current.serverNetProfit || 0) + Number(deltaGross || 0)
-      // clamp to >=0 and round to 2 decimals
       const clamped = Math.max(0, Number(Number(live).toFixed(2)))
       setLiveNetProfit(clamped)
-    }, 1000) // update UI every second (provides smooth minute-by-minute visual)
+    }, 1000)
 
-    // Periodic full resync (server is source of truth) - every 5 minutes
     resyncRef.current = setInterval(() => {
       loadOverview()
-    }, 5 * 60 * 1000) // 5 minutes
+    }, 5 * 60 * 1000)
 
     return () => {
       if (tickRef.current) clearInterval(tickRef.current)
       if (resyncRef.current) clearInterval(resyncRef.current)
     }
-  // We intentionally depend on account.deposits so that when deposits array changes (e.g. new deposit)
-  // we recompute deltas correctly. loadOverview will reset snapshotRef when server resync happens.
   }, [loadOverview, account.deposits])
 
-  // When we receive a fresh overview from server (account state changed), we already update account state
-  // above in loadOverview; but to be defensive also watch for user initial value changes.
   useEffect(() => {
-    // Update baseline values if auth user object changed drastically
     if (user) {
-      // keep account in sync with user for initial render
       setAccount((prev) => {
-        // only replace if prev is empty or very different
         if (!prev || !prev.deposits || prev.deposits.length === 0) {
           return {
             capital: user.capital || 0,
@@ -196,17 +184,16 @@ export default function UserMain(){
     }
   }, [user])
 
-  // compute displayed totals using liveNetProfit (client-side) + other server-provided balances
+  // compute displayed totals
   const totalPortfolio = Number(account.capital) + Number(liveNetProfit) + Number(account.referralEarnings)
   const availableWithdrawal = Number(liveNetProfit) + Number(account.referralEarnings)
 
-  // ZAR conversion rate (frontend display only)
-  const ZAR_RATE = 17
-  const toZAR = (usd) => (Number(usd || 0) * ZAR_RATE).toFixed(2)
+  // Get currency display
+  const currencyConfig = getCurrencyConfig();
+  const showCurrencyConversion = currencyConfig !== null;
 
-  // Determine latest active deposit start date (most-recent approved deposit)
+  // Determine latest active deposit start date
   const activeDeposits = Array.isArray(account.deposits) ? account.deposits.filter(d => d && d.status === 'active' && (d.startDate || d.approvedAt)) : []
-  // Some systems store startDate or approvedAt; prefer startDate then approvedAt
   const normalizeStart = (d) => d.startDate ? new Date(d.startDate) : (d.approvedAt ? new Date(d.approvedAt) : null)
   const latestActive = activeDeposits
     .map(d => ({ d, start: normalizeStart(d) }))
@@ -240,36 +227,45 @@ export default function UserMain(){
             <div className="overview-label">Total Portfolio Balance</div>
             <div className="overview-value">
               ${totalPortfolio.toFixed(2)}
-              <span className="zar-value">(R{toZAR(totalPortfolio)})</span>
+              {showCurrencyConversion && (
+                <span className="zar-value">{formatConvertedAmount(totalPortfolio)}</span>
+              )}
             </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Investment Capital</div>
             <div className="overview-value">
               ${Number(account.capital).toFixed(2)}
-              <span className="zar-value">(R{toZAR(account.capital)})</span>
+              {showCurrencyConversion && (
+                <span className="zar-value">{formatConvertedAmount(account.capital)}</span>
+              )}
             </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Available Withdrawal</div>
             <div className="overview-value">
               ${availableWithdrawal.toFixed(2)}
-              <span className="zar-value">(R{toZAR(availableWithdrawal)})</span>
+              {showCurrencyConversion && (
+                <span className="zar-value">{formatConvertedAmount(availableWithdrawal)}</span>
+              )}
             </div>
           </div>
           <div className="overview-card">
             <div className="overview-label">Net Profit <small style={{marginLeft:8, fontSize:12, color:'#666'}}>live</small></div>
             <div className="overview-value">
               ${Number(liveNetProfit).toFixed(2)}
-              <span className="zar-value">(R{toZAR(liveNetProfit)})</span>
+              {showCurrencyConversion && (
+                <span className="zar-value">{formatConvertedAmount(liveNetProfit)}</span>
+              )}
             </div>
-            {/* Note: Synced timestamp intentionally hidden as requested */}
           </div>
           <div className="overview-card">
             <div className="overview-label">Referral Earnings</div>
             <div className="overview-value">
               ${Number(account.referralEarnings).toFixed(2)}
-              <span className="zar-value">(R{toZAR(account.referralEarnings)})</span>
+              {showCurrencyConversion && (
+                <span className="zar-value">{formatConvertedAmount(account.referralEarnings)}</span>
+              )}
             </div>
           </div>
         </div>

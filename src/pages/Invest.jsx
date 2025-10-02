@@ -1,7 +1,16 @@
 // src/pages/Invest.jsx
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import '../styles/Invest.css'
+
+// Currency configuration
+const CURRENCY_CONFIG = {
+  'South Africa': { code: 'ZAR', rate: 17, symbol: 'R' },
+  'Nigeria': { code: 'NGN', rate: 1500, symbol: '₦' },
+  'Ghana': { code: 'GHS', rate: 12.50, symbol: 'GH₵' },
+  'Philippines': { code: 'PHP', rate: 58, symbol: '₱' }
+};
 
 /**
  * Updated plans and rates per user's specification:
@@ -52,10 +61,25 @@ function calcDailyProfit(amount, ratePercent, days) {
 
 export default function Invest(){
   const nav = useNavigate()
+  const { user } = useAuth()
 
-  // ZAR conversion rate (frontend display only)
-  const ZAR_RATE = 17
-  const toZAR = (usd) => (Number(usd || 0) * ZAR_RATE).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  // Get currency configuration based on user's country
+  const getCurrencyConfig = () => {
+    const userCountry = user?.country;
+    return CURRENCY_CONFIG[userCountry] || null;
+  };
+
+  // Format converted amount
+  const formatConvertedAmount = (usdAmount) => {
+    const currencyConfig = getCurrencyConfig();
+    if (!currencyConfig) return null;
+    
+    const converted = (Number(usdAmount || 0) * currencyConfig.rate).toFixed(2);
+    return `${currencyConfig.symbol}${converted}`;
+  };
+
+  const currencyConfig = getCurrencyConfig();
+  const showCurrencyConversion = currencyConfig !== null;
 
   function choose(plan){
     nav('/invest/confirm', { state: { plan } })
@@ -79,7 +103,9 @@ export default function Invest(){
               
               <div className="plan-amount">
                 ${p.amount.toLocaleString()}
-                <span className="zar-value">(R{toZAR(p.amount)})</span>
+                {showCurrencyConversion && (
+                  <span className="zar-value">({formatConvertedAmount(p.amount)})</span>
+                )}
               </div>
               <div className="plan-details">
                 {p.rate}% daily — {p.days} days (≈ {calc.businessDays} investment days)
@@ -90,14 +116,18 @@ export default function Invest(){
                   <span className="feature-label">Daily Profit:</span>
                   <span className="feature-value">
                     ${calc.dailyProfit}
-                    <span className="zar-value">(R{toZAR(calc.dailyProfit)})</span>
+                    {showCurrencyConversion && (
+                      <span className="zar-value">({formatConvertedAmount(calc.dailyProfit)})</span>
+                    )}
                   </span>
                 </div>
                 <div className="plan-feature">
                   <span className="feature-label">Total Return:</span>
                   <span className="feature-value">
                     ${calc.totalAfterDays}
-                    <span className="zar-value">(R{toZAR(calc.totalAfterDays)})</span>
+                    {showCurrencyConversion && (
+                      <span className="zar-value">({formatConvertedAmount(calc.totalAfterDays)})</span>
+                    )}
                   </span>
                 </div>
                 <div className="plan-feature">
