@@ -18,7 +18,7 @@ const CURRENCY_CONFIG = {
 const LEVELS = [
   { id: 1, title: 'Level 1', requirement: 10, salary: 20 },
   { id: 2, title: 'Level 2', requirement: 25, salary: 50 },
-  { id: 3, title: 'Level 3', requirement: 50, salary: 1000 },
+  { id: 3, title: 'Level 3', requirement: 50, salary: 100 },
   { id: 4, title: 'Level 4', requirement: 100, salary: 200 }
 ]
 
