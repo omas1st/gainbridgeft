@@ -16,10 +16,10 @@ const CURRENCY_CONFIG = {
 
 // Move LEVELS to module scope
 const LEVELS = [
-  { id: 1, title: 'Level 1', requirement: 10, salary: 1000 },
-  { id: 2, title: 'Level 2', requirement: 25, salary: 2500 },
-  { id: 3, title: 'Level 3', requirement: 50, salary: 5000 },
-  { id: 4, title: 'Level 4', requirement: 100, salary: 10000 }
+  { id: 1, title: 'Level 1', requirement: 10, salary: 20 },
+  { id: 2, title: 'Level 2', requirement: 25, salary: 50 },
+  { id: 3, title: 'Level 3', requirement: 50, salary: 1000 },
+  { id: 4, title: 'Level 4', requirement: 100, salary: 200 }
 ]
 
 export default function AgentDashboard(){
@@ -269,7 +269,7 @@ export default function AgentDashboard(){
               <div key={level.id} className={`level-card ${getLevelStatus(level)}`}>
                 <div className="level-header">
                   <div className="level-title">{level.title}</div>
-                  <div className="level-salary">Bonus: R{level.salary.toLocaleString()}</div>
+                  <div className="level-salary">Bonus: ${level.salary.toLocaleString()}</div>
                 </div>
                 <div className="level-body">
                   <div className="level-requirement">
