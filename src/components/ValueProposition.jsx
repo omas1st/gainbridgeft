@@ -9,9 +9,14 @@ export default function ValueProposition(){
       description: 'Earn returns that compound every business day for maximum growth potential'
     },
     {
+      icon: '💼',
+      title: 'Expert Forex Management',
+      description: 'Your capital is managed by professional traders with decades of combined experience in currency markets'
+    },
+    {
       icon: '🛡️',
-      title: 'Secure Platform',
-      description: 'Bank-level security and regulatory compliance for peace of mind'
+      title: 'Advanced Risk Management',
+      description: 'Strict risk protocols with maximum 2% risk per trade and professional stop-loss strategies'
     },
     {
       icon: '⚡',

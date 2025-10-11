@@ -8,8 +8,8 @@ export default function Hero(){
     <section className="hero">
       <div className="hero-inner">
         <div className="hero-left">
-          <h1>Invest smart. Grow faster — Welcome to Gainbridge investment</h1>
-          <p className="muted">White-glove-grade oversight and weekday-compounded returns in clearly defined plans.</p>
+          <h1>Professional Forex Account Management - Grow Your Capital with Expert Trading</h1>
+          <p className="muted">Let our experienced forex traders manage your investments with proven strategies, rigorous risk management, and daily profit distribution. Your capital is in professional hands.</p>
           <div className="hero-actions">
             <Link to="/register" className="hero-btn hero-btn-primary">Sign up</Link>
             {/* Added Login button */}
