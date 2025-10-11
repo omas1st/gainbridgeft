@@ -4,26 +4,36 @@ import '../styles/about.css'
 export default function TeamBios(){
   const teamMembers = [
     {
-      name: "Financial Experts",
-      role: "Investment Team",
-      bio: "Our team comprises seasoned financial professionals with decades of combined experience in investment management and market analysis."
+      name: "Forex Trading Experts",
+      role: "Senior Trading Team",
+      bio: "Our senior traders have decades of combined experience in currency markets, with backgrounds in institutional trading, hedge fund management, and proprietary trading firms. They specialize in technical analysis, risk management, and strategic position sizing."
     },
     {
-      name: "Tech Specialists",
-      role: "Technology Team", 
-      bio: "Dedicated to building secure, scalable platforms with cutting-edge technology to ensure your investment experience is seamless."
+      name: "Market Analysts",
+      role: "Research & Analysis Team", 
+      bio: "Dedicated to comprehensive market research, economic analysis, and real-time monitoring of global currency markets. They provide the strategic insights that drive our trading decisions across major and minor currency pairs."
     },
     {
-      name: "Support Team",
-      role: "Customer Success",
-      bio: "Available 24/7 to assist with any questions or concerns, ensuring you have the support you need throughout your investment journey.",
+      name: "Risk Management Specialists",
+      role: "Risk Management Team",
+      bio: "Focused on protecting investor capital through sophisticated risk management strategies. They ensure no single trade risks more than 2% of account capital and implement strict stop-loss protocols across all positions."
+    },
+    {
+      name: "Client Support Team",
+      role: "Customer Success & Support",
+      bio: "Available during market hours to assist with investment questions, account management, and provide updates on trading performance. Your dedicated partners in the investment journey.",
       contact: "Contact: Gainbridgeinvest@gmail.com"
     }
   ]
 
   return (
     <div className="about-team">
-      <h3 className="team-title">Our Team</h3>
+      <h3 className="team-title">Our Trading & Management Team</h3>
+      <p className="team-description">
+        Meet the professional team behind GainBridge's forex account management services. 
+        Each team brings specialized expertise to ensure your investments are managed with 
+        the highest level of professionalism and strategic execution.
+      </p>
       <div className="team-grid">
         {teamMembers.map((member, index) => (
           <div key={index} className="team-member">
