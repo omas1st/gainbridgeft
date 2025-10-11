@@ -196,6 +196,23 @@ export default function InvestConfirm(){
           </div>
         </section>
 
+        {/* Bitcoin Payment Guide Section */}
+        <section className="bitcoin-guide-section">
+          <h3 className="section-subtitle">How to Pay with Bitcoin</h3>
+          <div className="guide-content">
+            <p className="guide-text">
+              We recommend watching this video guide to understand how to make payments using Cryptocurrency.
+              This will help ensure your payment is processed correctly and without delays.
+            </p>
+            <button 
+              className="video-guide-btn"
+              onClick={() => window.open('https://youtu.be/jh0RXXXsBmY', '_blank')}
+            >
+              Watch Bitcoin Payment Guide
+            </button>
+          </div>
+        </section>
+
         {/* Payment Method Section */}
         <section className="payment-method-section">
           <h3 className="section-subtitle">Select Payment Method</h3>
