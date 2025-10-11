@@ -14,7 +14,7 @@ export default function Footer(){
           </div>
           
           <div className="footer-info">
-            <p className="footer-tagline">Professional investment platform with weekday-compounded returns</p>
+            <p className="footer-tagline">Professional Forex Account Management</p>
             <div className="footer-meta">
               <span className="footer-copyright">© {currentYear} Gainbridge Investment. All rights reserved.</span>
             </div>
