@@ -18,7 +18,7 @@ export default function Hero(){
 
             {/* Download Application button (opens MediaFire link in a new tab) */}
             <a
-              href="https://www.mediafire.com/file/kns8u4p82t6mz3q/Gainbridge.apk/file"
+              href="https://www.mediafire.com/file/m6hdbd9b2da8qdy/GainBridgeFx.apk/file"
               className="hero-btn hero-btn-primary"
               target="_blank"
               rel="noopener noreferrer"
