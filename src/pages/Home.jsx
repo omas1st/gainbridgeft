@@ -92,14 +92,12 @@ export default function Home(){
         <h2 className="section-title">About GainBridge Forex Management</h2>
         <div className="about-content">
           <p className="about-text">
-            GainBridge is a premier forex account management platform that specializes in professional 
-            currency trading and investment management. We combine advanced trading strategies with 
-            rigorous risk management to deliver consistent returns for our investors.
+            GainBridge provides automated, professional-grade forex management. Our systems leverage sophisticated algorithms and disciplined risk protocols to manage your investments and target steady growth.
           </p>
           <div className="home-about-highlights">
             <div className="highlight-item">
               <h4>Expert Forex Trading</h4>
-              <p>Professional traders managing your investments in global currency markets</p>
+              <p>Combining human expertise with advanced algorithms for optimal forex trading performance</p>
             </div>
             <div className="highlight-item">
               <h4>Risk Management</h4>

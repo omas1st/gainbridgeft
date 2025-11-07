@@ -9,7 +9,7 @@ export default function Hero(){
       <div className="hero-inner">
         <div className="hero-left">
           <h1>Forex Account Management</h1>
-          <p className="muted">Automate your forex investments with our bots, put you forex trading on autopilot. Our software executes data-driven strategies, manage risk meticulously, and credit profits to your account daily.</p>
+          <p className="muted">Automate your forex investments with our bots, put your forex trading on autopilot. Our software executes data-driven strategies, manage risk meticulously, and credit profits to your account daily.</p>
           <div className="hero-actions">
             <Link to="/register" className="hero-btn hero-btn-primary">Sign up</Link>
             {/* Added Login button */}
