@@ -10,13 +10,13 @@ export default function Footer(){
         <div className="footer-content">
           <div className="footer-brand">
             <div className="footer-logo">GB</div>
-            <div className="footer-company">Gainbridge Investment</div>
+            <div className="footer-company">Gainbridge</div>
           </div>
           
           <div className="footer-info">
             <p className="footer-tagline">Professional Forex Account Management</p>
             <div className="footer-meta">
-              <span className="footer-copyright">© {currentYear} Gainbridge Investment. All rights reserved.</span>
+              <span className="footer-copyright">© {currentYear} Gainbridge. All rights reserved.</span>
             </div>
           </div>
         </div>

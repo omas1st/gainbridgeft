@@ -393,3 +393,61 @@ section:last-of-type {
 .video-guide-btn:hover {
   background: #e08218;
 }
+
+/* Receipt Upload Section Styles */
+.receipt-upload-section {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.upload-instructions {
+  margin-bottom: 1rem;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.upload-instructions p {
+  margin-bottom: 0.5rem;
+}
+
+.file-input-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-input-label {
+  background: #007bff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.file-input-label:hover {
+  background: #0056b3;
+}
+
+.file-name {
+  color: #495057;
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+/* Update action section to account for receipt requirement */
+.action-section .confirm-btn.primary:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Rest of your existing InvestConfirm.css styles remain the same */

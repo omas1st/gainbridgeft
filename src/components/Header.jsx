@@ -122,7 +122,7 @@ export default function Header(){
           <div className="brand-area">
             <Link to="/" className="brand">
               <span className="brand-mark">GB</span>
-              <span className="brand-text">Gainbridge investment</span>
+              <span className="brand-text">Gainbridge</span>
             </Link>
 
             {/* Desktop Navigation */}

@@ -23,6 +23,7 @@ export default function InvestConfirm(){
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState(null)
   const [copiedField, setCopiedField] = useState(null)
+  const [receiptFile, setReceiptFile] = useState(null)
 
   // Get currency configuration based on user's country
   const getCurrencyConfig = () => {
@@ -103,18 +104,80 @@ export default function InvestConfirm(){
     return filteredMethods.find(m => m.id === methodId) || null
   }
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        setError('Please upload a valid file (JPEG, PNG, JPG, or PDF)');
+        return;
+      }
+      
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('File size must be less than 5MB');
+        return;
+      }
+      
+      setReceiptFile(file);
+      setError(null);
+    }
+  };
+
   async function markPaid(){
     setError(null)
     setMsg(null)
     if (!user || !user.id) { setError('User not authenticated'); return }
     if (!methodId) { setError('Please select a payment method'); return }
+    if (!receiptFile) { setError('Please upload your payment receipt'); return }
+    
     setLoading(true)
     try {
-      await backend.post(`/users/${user.id}/deposit`, { amount: plan.amount, method: methodId, plan })
+      // First upload the receipt to Cloudinary
+      const formData = new FormData();
+      formData.append('receipt', receiptFile);
+
+      console.log('Uploading receipt...');
+      
+      // FIXED: Use the correct endpoint - '/users/upload/receipt' instead of '/upload/receipt'
+      const uploadResponse = await backend.post('/users/upload/receipt', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const receiptUrl = uploadResponse.data.url;
+      console.log('Receipt uploaded successfully:', receiptUrl);
+
+      // Then submit the deposit request with the receipt URL
+      console.log('Submitting deposit request...');
+      await backend.post(`/users/${user.id}/deposit`, { 
+        amount: plan.amount, 
+        method: methodId, 
+        plan,
+        receiptUrl 
+      })
+      
       setMsg('Payment request submitted — your payment is now pending. Your account will be credited within 24 hours once the payment is confirmed by an administrator.')
       setTimeout(()=> nav('/dashboard'), 2200)
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || 'Failed to notify payment')
+      console.error('Payment submission error:', err);
+      console.error('Error response:', err.response);
+      
+      const errorMessage = err?.response?.data?.message || err.message || 'Failed to submit payment request';
+      setError(errorMessage);
+      
+      // More specific error messages based on status code
+      if (err.response?.status === 404) {
+        setError('Upload service unavailable. Please try again later or contact support.');
+      } else if (err.response?.status === 413) {
+        setError('File too large. Please select a file smaller than 5MB.');
+      } else if (err.response?.status === 400) {
+        setError(`Upload error: ${errorMessage}`);
+      } else if (err.response?.status === 500) {
+        setError('Server error. Please try again later.');
+      }
     } finally {
       setLoading(false)
     }
@@ -361,13 +424,38 @@ export default function InvestConfirm(){
           </div>
         </section>
 
+        {/* Upload Payment Receipt Section */}
+        <section className="receipt-upload-section">
+          <h3 className="section-subtitle">Upload Payment Receipt</h3>
+          <div className="receipt-upload-area">
+            <div className="upload-instructions">
+              <p>After making your payment, please upload a screenshot or photo of your payment receipt/proof.</p>
+              <p><strong>Supported formats:</strong> JPG, PNG, PDF (Max 5MB)</p>
+            </div>
+            
+            <div className="file-input-group">
+              <input 
+                type="file" 
+                id="receipt-upload"
+                accept=".jpg,.jpeg,.png,.pdf"
+                onChange={handleFileChange}
+                className="file-input"
+              />
+              <label htmlFor="receipt-upload" className="file-input-label">
+                Choose File
+              </label>
+              {receiptFile && (
+                <span className="file-name">{receiptFile.name}</span>
+              )}
+            </div>
+          </div>
+        </section>
+
         {/* Action Section */}
         <section className="action-section">
           <div className="action-instruction">
             <p className="instruction-text">
-              After completing your payment using the instructions above, please click the button below to notify us.
-              <br />
-              <strong>It is compulsory to send your payment receipt/proof to our platform email: <a href="mailto:gainbridgeinvest@gmail.com">gainbridgeinvest@gmail.com</a>.</strong>
+              After completing your payment and uploading the receipt above, please click the button below to notify us.
             </p>
           </div>
           
@@ -375,7 +463,7 @@ export default function InvestConfirm(){
             <button 
               className="confirm-btn primary" 
               onClick={markPaid} 
-              disabled={loading}
+              disabled={loading || !receiptFile}
             >
               {loading ? 'Processing...' : 'I Have Made Payment'}
             </button>

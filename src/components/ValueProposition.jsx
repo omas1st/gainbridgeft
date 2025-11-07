@@ -11,7 +11,7 @@ export default function ValueProposition(){
     {
       icon: '💼',
       title: 'Expert Forex Management',
-      description: 'Your capital is managed by professional traders with decades of combined experience in currency markets'
+      description: 'Your investments are managed by our automated trading algorithms, which embed decades of expert knowledge into every disciplined, data-driven trade.'
     },
     {
       icon: '🛡️',
