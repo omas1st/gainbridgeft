@@ -30,16 +30,16 @@ const CURRENCY_CONFIG = {
  * For a 60-day calendar window this yields 42 business days (approx).
  */
 const PLANS = [
-  { amount: 20, rate: 5, days: 60 },
-  { amount: 50, rate: 5, days: 60 },
-  { amount: 100, rate: 6, days: 60 },
-  { amount: 200, rate: 6, days: 60 },
-  { amount: 500, rate: 6, days: 60 },
-  { amount: 1000, rate: 7, days: 60 },
-  { amount: 2000, rate: 7, days: 60 },
-  { amount: 5000, rate: 7, days: 60 },
-  { amount: 10000, rate: 8, days: 60 },
-  { amount: 20000, rate: 8, days: 60 }
+  { amount: 30, rate: 4, days: 60 },
+  { amount: 50, rate: 4, days: 60 },
+  { amount: 100, rate: 4.5, days: 60 },
+  { amount: 200, rate: 4.5, days: 60 },
+  { amount: 500, rate: 5, days: 60 },
+  { amount: 1000, rate: 6, days: 60 },
+  { amount: 2000, rate: 6, days: 60 },
+  { amount: 5000, rate: 6, days: 60 },
+  { amount: 10000, rate: 7, days: 60 },
+  { amount: 20000, rate: 7, days: 60 }
 ]
 
 function calcDailyProfit(amount, ratePercent, days) {
@@ -137,7 +137,7 @@ export default function Invest(){
               </div>
               
               <button className="plan-button" onClick={()=>choose(p)}>
-                Choose Plan
+                Choose & Deposit
               </button>
             </div>
           )
