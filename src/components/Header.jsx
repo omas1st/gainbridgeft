@@ -82,6 +82,10 @@ export default function Header(){
     return Math.min((scrollY / documentHeight) * 100, 100);
   };
 
+  const handleChatUs = () => {
+    window.open('mailto:gainbridgeinvest@gmail.com', '_blank');
+  };
+
   const dashboardPaths = ['/dashboard', '/profile', '/agent', '/admin', '/messages', '/invest']
   const onDashboard = dashboardPaths.some(p => location.pathname.startsWith(p))
 
@@ -100,13 +104,15 @@ export default function Header(){
         { icon: '💳', label: 'Withdraw', action: () => navigate('/dashboard/withdraw'), show: true },
         { icon: '📈', label: 'Transactions', action: () => navigate('/dashboard/transactions'), show: true },
         { icon: '👥', label: 'Referrals', action: () => navigate('/dashboard/referrals'), show: true },
+        { icon: '💬', label: 'Chat Us', action: handleChatUs, show: true },
         { icon: '🚪', label: 'Logout', action: handleLogout, show: true, isLogout: true }
       ].filter(item => item.show);
     } else {
       return [
         { icon: '🔐', label: 'Login', action: () => navigate('/login'), show: true },
         { icon: '📝', label: 'Sign Up', action: () => navigate('/register'), show: true, isPrimary: true },
-        { icon: '🔑', label: 'Reset Password', action: () => navigate('/reset-password'), show: true }
+        { icon: '🔑', label: 'Reset Password', action: () => navigate('/reset-password'), show: true },
+        { icon: '💬', label: 'Chat Us', action: handleChatUs, show: true }
       ];
     }
   };
@@ -188,6 +194,15 @@ export default function Header(){
                 <button className="header-btn header-btn-small" onClick={() => navigate('/profile')}>
                   Profile
                 </button>
+                
+                {/* Chat Us Button for Desktop - Logged In Users */}
+                <button 
+                  className="header-btn header-btn-small header-btn-chat"
+                  onClick={handleChatUs}
+                >
+                  💬 Chat Us
+                </button>
+                
                 <button className="header-btn header-btn-small header-btn-ghost" onClick={handleLogout}>
                   Logout
                 </button>
@@ -197,6 +212,15 @@ export default function Header(){
                 <Link to="/login" className="header-btn header-btn-small header-btn-ghost">
                   Login
                 </Link>
+                
+                {/* Chat Us Button for Desktop - Logged Out Users */}
+                <button 
+                  className="header-btn header-btn-small header-btn-chat"
+                  onClick={handleChatUs}
+                >
+                  💬 Chat Us
+                </button>
+                
                 <Link to="/register" className="header-btn header-btn-small header-btn-primary">
                   Sign Up
                 </Link>

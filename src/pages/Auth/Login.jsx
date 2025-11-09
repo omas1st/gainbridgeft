@@ -52,7 +52,7 @@ export default function Login() {
       <div className="auth-card">
         <div className="auth-brand">
           <div className="brand-logo">GB</div>
-          <div className="brand-text">Gainbridge Investment</div>
+          <div className="brand-text">Gainbridge</div>
           <div className="brand-subtitle">Welcome back</div>
         </div>
         

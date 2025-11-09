@@ -480,3 +480,19 @@ html {
     padding-top: 0;
   }
 }
+
+/* Add to src/styles/header.css */
+
+/* Chat Us button styles */
+.header-btn-chat {
+  background: linear-gradient(135deg, #34d399, #10b981) !important;
+  color: white !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.header-btn-chat:hover {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}

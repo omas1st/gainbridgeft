@@ -1,5 +1,5 @@
 // src/pages/Dashboard/WithdrawPreview.jsx
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import backend from '../../services/api'
 import '../../styles/Withdraw.css'
@@ -11,6 +11,25 @@ export default function WithdrawPreview(){
   const nav = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [userData, setUserData] = useState(null) // NEW
+  const [withdrawalInfo, setWithdrawalInfo] = useState(null) // NEW
+
+  // NEW: Fetch user data and withdrawal info
+  useEffect(() => {
+    async function fetchUserData() {
+      if (!userId) return
+      
+      try {
+        const { data } = await backend.get(`/users/${userId}/overview`)
+        setUserData(data.overview)
+        setWithdrawalInfo(data.overview.withdrawalSchedule)
+      } catch (err) {
+        console.error('Failed to fetch user data:', err)
+      }
+    }
+    
+    fetchUserData()
+  }, [userId])
 
   if(!payload || !userId) {
     return (
@@ -32,7 +51,50 @@ export default function WithdrawPreview(){
     )
   }
 
+  // NEW: Check if withdrawal is allowed
+  const isWithdrawalAllowed = () => {
+    if (userData?.withdrawalRestricted) return false
+    if (withdrawalInfo && !withdrawalInfo.allowedToday) return false
+    return true
+  }
+
+  // NEW: Get withdrawal status message
+  const getWithdrawalStatusMessage = () => {
+    if (userData?.withdrawalRestricted) {
+      return {
+        type: 'error',
+        message: `Withdrawal is restricted. Reason: ${userData.withdrawalRestrictionReason || 'Contact support for more information.'}`
+      }
+    }
+    
+    if (withdrawalInfo && !withdrawalInfo.allowedToday) {
+      if (withdrawalInfo.scheduleType === 'daysOfWeek') {
+        return {
+          type: 'info',
+          message: `Withdrawals are only allowed on ${withdrawalInfo.withdrawalDays.join(', ')}. Next withdrawal day: ${withdrawalInfo.nextWithdrawalDay}`
+        }
+      } else if (withdrawalInfo.scheduleType === 'interval') {
+        const daysUntil = Math.ceil((withdrawalInfo.nextWithdrawalDate - new Date()) / (1000 * 60 * 60 * 24))
+        return {
+          type: 'info',
+          message: `Withdrawals are allowed every ${withdrawalInfo.intervalDays} days. Next withdrawal in ${daysUntil} day(s)`
+        }
+      }
+    }
+    
+    return null
+  }
+
   async function submit(){
+    // NEW: Check withdrawal restrictions before submitting
+    if (!isWithdrawalAllowed()) {
+      const statusMessage = getWithdrawalStatusMessage()
+      if (statusMessage) {
+        setError(statusMessage.message)
+      }
+      return
+    }
+
     setError(null)
     setLoading(true)
     try{
@@ -46,11 +108,42 @@ export default function WithdrawPreview(){
     }
   }
 
+  const statusMessage = getWithdrawalStatusMessage() // NEW
+
   return (
     <div className="withdraw-container">
       <div className="withdraw-card">
         <h2 className="withdraw-header">Review Withdrawal</h2>
         
+        {/* NEW: Withdrawal Status Information */}
+        {withdrawalInfo && (
+          <div className="withdrawal-schedule-info">
+            <h4>Withdrawal Schedule</h4>
+            {withdrawalInfo.scheduleType === 'daysOfWeek' && (
+              <p>Withdrawals are allowed on: <strong>{withdrawalInfo.withdrawalDays.join(', ')}</strong></p>
+            )}
+            {withdrawalInfo.scheduleType === 'interval' && (
+              <p>Withdrawals are allowed every: <strong>{withdrawalInfo.intervalDays} days</strong></p>
+            )}
+            <p>
+              {withdrawalInfo.allowedToday ? (
+                <span style={{color: 'green'}}>✓ Withdrawals are allowed today</span>
+              ) : (
+                <span style={{color: 'orange'}}>
+                  Next withdrawal: {withdrawalInfo.nextWithdrawalDate ? new Date(withdrawalInfo.nextWithdrawalDate).toLocaleDateString() : 'Please check back later'}
+                </span>
+              )}
+            </p>
+          </div>
+        )}
+
+        {/* NEW: Restriction Warning */}
+        {userData?.withdrawalRestricted && (
+          <div className="message message-error">
+            <strong>Withdrawal Restricted:</strong> {userData.withdrawalRestrictionReason || 'Your withdrawal ability has been restricted. Please contact support for more information.'}
+          </div>
+        )}
+
         <div className="preview-card">
           <div className="preview-item">
             <span className="preview-label">Method:</span>
@@ -112,7 +205,7 @@ export default function WithdrawPreview(){
           <button 
             className="btn btn-primary btn-flex" 
             onClick={submit} 
-            disabled={loading}
+            disabled={loading || !isWithdrawalAllowed()} // NEW: Disable if not allowed
           >
             {loading ? 'Processing…' : 'Confirm & Submit'}
           </button>
@@ -125,6 +218,13 @@ export default function WithdrawPreview(){
         </div>
 
         {error && <div className="message message-error">{error}</div>}
+        
+        {/* NEW: Show status message if withdrawal is not allowed */}
+        {statusMessage && !error && (
+          <div className={`message message-${statusMessage.type}`}>
+            {statusMessage.message}
+          </div>
+        )}
         
         <div className="message" style={{background: '#f0f9ff', borderColor: '#bae6fd', color: '#0369a1'}}>
           <strong>Note:</strong> Your withdrawal will be processed within 24 hours once approved by management.

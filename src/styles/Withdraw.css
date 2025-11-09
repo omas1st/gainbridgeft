@@ -549,3 +549,41 @@
     display: none;
   }
 }
+
+/* Withdraw.css - Add these styles */
+
+.withdrawal-schedule-info {
+  background: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.withdrawal-schedule-info h4 {
+  margin: 0 0 10px 0;
+  color: #0066cc;
+}
+
+.withdrawal-schedule-info p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.message-info {
+  background: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  color: #0066cc;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin: 15px 0;
+}
+
+.message-error {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin: 15px 0;
+}
